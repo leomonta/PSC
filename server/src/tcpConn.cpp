@@ -11,20 +11,12 @@
 Socket tcpConn::initializeServer(const short port, const char protocol) {
 
 	// create the server socket descriptor, return -1 on failure
-	Socket serverSocket;
+	auto protCode = protocol == 6 ? AF_INET6 : AF_INET;
 
-	if (protocol == 6) {
-		serverSocket = socket(
-		    AF_INET6,                    // IPv6
+	auto serverSocket = socket(
+		    protCode,                    // IPv6
 		    SOCK_STREAM | SOCK_NONBLOCK, // reliable conn, multiple communication per socket, non blocking accept
 		    IPPROTO_TCP);                // Tcp protocol
-
-	} else {
-		serverSocket = socket(
-		    AF_INET,                     // IPv4
-		    SOCK_STREAM | SOCK_NONBLOCK, // reliable conn, multiple communication per socket, non blocking accept
-		    IPPROTO_TCP);                // Tcp protocol
-	}
 
 	if (serverSocket == INVALID_SOCKET) {
 		log(LOG_FATAL, "[TCP] Impossible to create server Socket.\n	Reason: %d %s\n", errno, strerror(errno));
@@ -96,12 +88,9 @@ Socket tcpConn::initializeServer(const short port, const char protocol) {
 
 Socket tcpConn::initializeClient(const short port, const char *server_name, const char protocol) {
 
-	Socket clientSock;
-	if (protocol == 6) {
-		clientSock = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
-	} else {
-		clientSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	}
+
+	auto protCode = protocol == 6 ? AF_INET6 : AF_INET;
+	auto clientSock = socket(protCode, SOCK_STREAM, IPPROTO_TCP);
 
 	if (clientSock == INVALID_SOCKET) {
 		log(LOG_FATAL, "Impossible to create server Socket.\n	Reason: %d %s\n", errno, strerror(errno));
@@ -119,11 +108,7 @@ Socket tcpConn::initializeClient(const short port, const char *server_name, cons
 
 	// set the entire server address struct to 0
 	bzero((char *)&serv_addr, sizeof(serv_addr));
-	if (protocol == 6) {
-		serv_addr.sin_family = AF_INET6;
-	} else {
-		serv_addr.sin_family = AF_INET;
-	}
+	serv_addr.sin_family = protCode;
 
 	// copy th server ip from the server hostname to the server socket internet address
 	bcopy((char *)server_hn->h_addr_list[0], (char *)&serv_addr.sin_addr.s_addr, server_hn->h_length);
@@ -160,7 +145,7 @@ void tcpConn::shutdownSocket(const Socket sck) {
 	auto res = shutdown(sck, SHUT_RDWR);
 
 	if (res < 0) {
-		log(LOG_ERROR, "[TCP] Could not shutdown socket %s\n	Reason: %d %s\n", sck, errno, strerror(errno));
+		log(LOG_ERROR, "[TCP] Could not shutdown socket %d\n	Reason: %d %s\n", sck, errno, strerror(errno));
 	}
 }
 

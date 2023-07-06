@@ -1,0 +1,20 @@
+# Personal Server Chat (PSC)
+
+A simple client-server encrypted chat built on top TCP for personal use and small groups
+
+## The Communication is based on a binary custon protol described here
+
+What to communicate
+* Who is doing the action (user or server)
+* What action is being performed (Post a message to the server, get a message from the server)
+* Time of the message being sent
+* The Body of the message 
+
+<pre style="font-family: 'Fira Code';">
+ 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32
+| 1|
+
+
+1 => 0 GET
+     1 POST
+</pre>
