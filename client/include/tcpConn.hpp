@@ -13,6 +13,8 @@ typedef int Socket;
 
 namespace tcpConn {
 
+	// Commens
+
 	/**
 	 * setup a server listening on port
 	 * @return the server socket if successfull, INVALID_SOCKET if not
