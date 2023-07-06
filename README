@@ -19,6 +19,8 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 -   What action is being performed (Post a message to the server, get a message from the server)
     -   Get a resource
     -   Post a resource
+	-   Patch (edit) a past resource
+		- The specifi resource ID is specified in the body
     -   Each with a variant
         -   Text only, lightweight.
         -   Res only, if you also need the binary resource
@@ -45,22 +47,24 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
-00 |VM Vm| M  V|xxxxx| D  a  y  ,     d  d     M  M  M     y  y  y  y     h  h  :  m  m  :  s  s \0|
+00 |VM Vm| M  M  V|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx|
 20 |                   U                  U                  I                  D                  |
-40 |Data
+40 |        t         i        m         e        s         t        a         m         p         |
+60 |Body
 
 
-M => 0 GET
-     1 POST
+M M => 00 GET
+       01 POST
+       10 PATCH
 
 V => 0 TEXT
      1 BIN
 
-x => Unused
+timestamp => 32bit unigned int unix timestamp
 
 UUID => Unique User ID
 
-Data => text or binary data
+Body => text or binary data
 
 ```
 
