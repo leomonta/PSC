@@ -20,7 +20,7 @@
 				"clear": true
 			},
 			"icon": {
-				"color": "terminal.ansiBlue",
+				"color": "terminal.ansiGreen",
 				"id": "combine"
 			}
 		},
@@ -89,7 +89,7 @@
 				"clear": true
 			},
 			"icon": {
-				"color": "terminal.ansiGreen",
+				"color": "terminal.ansiBlue",
 				"id": "combine"
 			}
 		},
