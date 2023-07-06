@@ -13,7 +13,7 @@
 		"include_dirs": [
 			"include",
 			"ext",
-			"/usr/local/include"
+			"../common"
 		],
 		"source_dirs": [
 			"src"

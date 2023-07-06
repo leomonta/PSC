@@ -45,7 +45,7 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
-00 |VM Vm| M  V| D  a  y  ,     d  d     M  M  M     y  y  y  y     h  h  :  m  m  :  s  s \0|xxxxx|
+00 |VM Vm| M  V|xxxxx| D  a  y  ,     d  d     M  M  M     y  y  y  y     h  h  :  m  m  :  s  s \0|
 20 |                   U                  U                  I                  D                  |
 40 |Data
 
@@ -66,13 +66,23 @@ Data => text or binary data
 
 ## Network
 
+### Header
+
+The general header is 64bytes long and contains the minimum data i can think of that is always needed
+
+This header does not contain sensitive data, the UUID means who is talking for the server only, so it's not needed to compress encrypt it
+
 ### Port
+
 61970
 
 ### Protocol base
+
 Tcp
 
 ## Graphics
+
+dsad
 
 ### messages
 
@@ -84,3 +94,4 @@ Graphic style is exagonal for the messages
  \  Example message /
   \----------------/
 ```
+

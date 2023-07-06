@@ -3,8 +3,9 @@
 		{
 			"name": "g++64",
 			"includePath": [
-				"include",
-				"ext"
+				"server/include",
+				"client/include",
+				"common"
 			],
 			"compilerArgs": [
 				"-Wconversion",
@@ -17,9 +18,6 @@
 				"_DEBUG",
 				"UNICODE",
 				"_UNICODE",
-				"PLATFORM_DESKTOP",
-				"SUPPORT_TRACELOG_DEBUG",
-				"RLGL_IMPLEMENTATION"
 			],
 			"windowsSdkVersion": "10.0.18362.0",
 			"compilerPath": "/usr/bin/g++",
