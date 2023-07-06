@@ -6,15 +6,48 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 
 What to communicate
 * Who is doing the action (user or server)
+	- UUID 32bits of random bits given by the server to the client. Representable in 8 hex digits
+		- The servers check that no one in the server has the same UUID. obv
+		- 32bits allow for 2^32 4 bln UUID, more than enough
+	- The server is UUID 00...00, unmistakable
+
 * What action is being performed (Post a message to the server, get a message from the server)
+	- Get a resource
+	- Post a resource
+	- Each with a variant
+		- Text only, lightweight.
+		- Res only, if you also need the binary resource
+
 * Time of the message being sent
+	- GMT timestamp of the message the moment the button is pressed formatted following the RFC 1123
+		- An example -> Sun, 06 Nov 1994 08:49:37, 25 bytes long, the GMT is implied
+	- The server should echo back to the client the time at which it has received the message
+
 * The Body of the message 
+	- The text plus some referencies to media and formatting
 
-<pre style="font-family: 'Fira Code';">
- 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32
-| 1|
+* Protocol Version
+	- Byte.Byte, only major and minor
+		- 1.0 for now
 
 
-1 => 0 GET
+```
+    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
+00 |VM Vm| M  V| D  a  y  ,     d  d     M  M  M     y  y  y  y     h  h  :  m  m  :  s  s \0|xxxxx|
+20 |                   U                  U                  I                  D                  |
+40 |Data
+
+
+M => 0 GET
      1 POST
-</pre>
+
+V => 0 TEXT
+     1 BIN 
+
+x => Unused
+
+UUID => Unique User ID
+
+Data => text or binary data 
+
+```
