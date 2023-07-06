@@ -12,7 +12,8 @@
 		"exe_path_name": "bin/PSCS",
 		"include_dirs": [
 			"include",
-			"ext"
+			"ext",
+			"/usr/local/include"
 		],
 		"source_dirs": [
 			"src"
@@ -27,7 +28,8 @@
 		],
 		"libraries_names": [
 			"dl",
-			"pthread"
+			"pthread",
+			"netTcpSslDebug"
 		]
 
 	},
@@ -38,6 +40,9 @@
 		"libraries_dirs": [
 		],
 		"libraries_names": [
+			"dl",
+			"pthread",
+			"netTcpSsl"
 		]
 	}
 }

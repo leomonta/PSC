@@ -8,8 +8,8 @@ int main() {
 		auto client = tcpConn::acceptClientSock(ssck);
 
 		if (client != -1) {
-			std::string fy = "No, FuckYou";
-			tcpConn::sendSegment(client, fy);
+			const char* fy = "No, FuckYou Too";
+			tcpConn::sendSegmentC(client, fy);
 			break;
 		}
 	}
