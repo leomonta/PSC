@@ -7,37 +7,41 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 ### General requirements
 
 #### Who
-* Who is doing the action (user or server)
-	- UUID 32bits of random bits given by the server to the client. Representable in 8 hex digits
-		- The servers check that no one in the server has the same UUID. obv
-		- 32bits allow for 2^32 4 bln UUID, more than enough
-	- The server is UUID 00...00, unmistakable
+
+-   Who is doing the action (user or server)
+    -   UUID 32bits of random bits given by the server to the client. Representable in 8 hex digits
+        -   The servers check that no one in the server has the same UUID. obv
+        -   32bits allow for 2^32 4 bln UUID, more than enough
+    -   The server is UUID 00...00, unmistakable
 
 #### How
-* What action is being performed (Post a message to the server, get a message from the server)
-	- Get a resource
-	- Post a resource
-	- Each with a variant
-		- Text only, lightweight.
-		- Res only, if you also need the binary resource
+
+-   What action is being performed (Post a message to the server, get a message from the server)
+    -   Get a resource
+    -   Post a resource
+    -   Each with a variant
+        -   Text only, lightweight.
+        -   Res only, if you also need the binary resource
 
 #### When
-* Time of the message being sent
-	- GMT timestamp of the message the moment the button is pressed formatted following the RFC 1123
-		- An example -> Sun, 06 Nov 1994 08:49:37, 25 bytes long, the GMT is implied
-	- The server should echo back to the client the time at which it has received the message
+
+-   Time of the message being sent
+    -   GMT timestamp of the message the moment the button is pressed formatted following the RFC 1123
+        -   An example -> Sun, 06 Nov 1994 08:49:37, 25 bytes long, the GMT is implied
+    -   The server should echo back to the client the time at which it has received the message
 
 #### What
-* The Body of the message 
-	- The text plus some referencies to media and formatting
+
+-   The Body of the message
+    -   The text plus some referencies to media and formatting
 
 #### Version
-* Protocol Version
-	- Byte.Byte, only major and minor
-		- 1.0 for now
+
+-   Protocol Version
+    -   Byte.Byte, only major and minor
+        -   1.0 for now
 
 ### Bit map
-
 
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
@@ -50,15 +54,27 @@ M => 0 GET
      1 POST
 
 V => 0 TEXT
-     1 BIN 
+     1 BIN
 
 x => Unused
 
 UUID => Unique User ID
 
-Data => text or binary data 
+Data => text or binary data
 
 ```
+
+## Network
+
+### Port
+61970
+
+### Protocol base
+Tcp
+
+## Graphics
+
+### messages
 
 Graphic style is exagonal for the messages
 
