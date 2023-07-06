@@ -2,14 +2,14 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Debug",
+			"name": "PSCClient",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/bin/PSC",
-			"args": [],
+			"program": "${workspaceFolder}/client/bin/PSCClient",
+			"args": [ ],
 			"stopAtEntry": false,
-			"cwd": "${workspaceFolder}/bin/",
-			"environment": [],
+			"cwd": "${workspaceFolder}/client/bin/",
+			"environment": [ ],
 			"externalConsole": false,
 			"MIMode": "gdb",
 			"miDebuggerPath": "/usr/bin/gdb",
@@ -20,17 +20,17 @@
 					"ignoreFailures": false
 				}
 			],
-			"preLaunchTask": "C/C++: g++.exe build all modified files"
+			"preLaunchTask": "PSCServer build all modified files"
 		},
 		{
-			"name": "Debug + benchmark",
+			"name": "PSCServer",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/bin/PSC",
-			"args": ["-b"],
+			"program": "${workspaceFolder}/server/bin/PSCClient",
+			"args": [ ],
 			"stopAtEntry": false,
-			"cwd": "${workspaceFolder}/bin/",
-			"environment": [],
+			"cwd": "${workspaceFolder}/server/bin/",
+			"environment": [ ],
 			"externalConsole": false,
 			"MIMode": "gdb",
 			"miDebuggerPath": "/usr/bin/gdb",
@@ -41,7 +41,7 @@
 					"ignoreFailures": false
 				}
 			],
-			"preLaunchTask": "C/C++: g++.exe build all modified files"
+			"preLaunchTask": "PSCClient build all modified files"
 		}
 	]
 }

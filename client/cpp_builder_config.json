@@ -9,7 +9,7 @@
 	
 	"directories": {
 		"project_dir": ".",
-		"exe_path_name": "bin/PSCS",
+		"exe_path_name": "bin/PSCC",
 		"include_dirs": [
 			"include",
 			"ext"
