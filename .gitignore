@@ -1,0 +1,5 @@
+bin/*
+obj/*
+files_hash.txt
+temp*
+old*

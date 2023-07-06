@@ -1,0 +1,43 @@
+{
+	"scripts" : {
+	},
+	"compiler": {
+		"compiler_style": "gcc",
+		"compiler_exe": "g++",
+		"linker_exe": "g++"
+	},
+	
+	"directories": {
+		"project_dir": ".",
+		"exe_path_name": "bin/PSC",
+		"include_dirs": [
+			"include",
+			"ext"
+		],
+		"source_dirs": [
+			"src"
+		],
+		"temp_dir": "obj"
+	},
+
+	"debug": {
+		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fsanitize=address -fsanitize=leak",
+		"linker_args": "-fsanitize=address -fsanitize=leak",
+		"libraries_dirs": [
+		],
+		"libraries_names": [
+			"dl",
+			"pthread"
+		]
+
+	},
+
+	"release": {
+		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra",
+		"linker_args": "",
+		"libraries_dirs": [
+		],
+		"libraries_names": [
+		]
+	}
+}
