@@ -16,7 +16,8 @@
 			"../common"
 		],
 		"source_dirs": [
-			"src"
+			"src",
+			"../common"
 		],
 		"temp_dir": "obj"
 	},

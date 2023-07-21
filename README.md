@@ -2,7 +2,7 @@
 
 A simple client-server encrypted chat built on top TCP for personal use and small groups
 
-## The Communication is based on a binary custom protol described here
+## The Communication is based on a binary custom protocol described here
 
 ### General requirements
 
@@ -47,16 +47,17 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 #### How much is being transferred
 
 -   Content lenght in Bytes excluding the header
-    -   Use remaining size in the header, 20 bits, 1048576, 1MiB
+    -   Use remaining size in the header, 21 bits, 2097152, max 2MiB data
 
 ### Bit map
 
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
-00 |     VM    |     Vm    | MM  | V|                            Length                            |
+00 |     VM    |     Vm    | MM  | V|                            length                            |
 20 |                                             UUID                                              |
 40 |                                           timestamp                                           |
 60 |                                             Body                                              |
+...|                                                                                               |
 
 VM => Version Major
 Vm => Version Minor
@@ -68,7 +69,7 @@ M M => 00 GET
 V => 0 TEXT
      1 BIN
 
-Length => Lenght of the body in size
+length => Lenght of the body in size
 
 timestamp => 32bit unigned int unix timestamp
 
@@ -77,6 +78,10 @@ UUID => Unique User ID
 Body => text or binary data
 
 ```
+
+### Endiannes
+
+All Values should be stored in little endian 
 
 ## Network
 

@@ -17,60 +17,60 @@
 char currLogLevel = LOG_ALL;
 
 void setLogLevel(const char newLogLevel) {
-    currLogLevel = newLogLevel;
+	currLogLevel = newLogLevel;
 }
 
 void log(const char logLevel, const char *mex, ...) {
 
-    if (currLogLevel > logLevel) {
-        return;
-    }
+	if (currLogLevel > logLevel) {
+		return;
+	}
 
-    va_list args;
-    va_start(args, mex);
+	va_list args;
+	va_start(args, mex);
 
-    const char *prefix = "[ UNKWN ]";
+	const char *prefix = "[ UNKWN ]";
 
-    switch (logLevel) {
-    case LOG_ALL:
-        prefix = "[  ALL  ]";
-        break;
-    case LOG_DEBUG:
-        prefix = GRN "[ DEBUG ]";
-        break;
-    case LOG_INFO:
-        prefix = CYN "[  INFO ]";
-        break;
-    case LOG_WARNING:
-        prefix = YEL "[WARNING]";
-        break;
-    case LOG_ERROR:
-        prefix = MAG "[ ERROR ]";
-        break;
-    case LOG_FATAL:
-        prefix = RED "[ FATAL ]";
-        break;
-    }
+	switch (logLevel) {
+	case LOG_ALL:
+		prefix = "[  ALL  ]";
+		break;
+	case LOG_DEBUG:
+		prefix = GRN "[ DEBUG ]";
+		break;
+	case LOG_INFO:
+		prefix = CYN "[  INFO ]";
+		break;
+	case LOG_WARNING:
+		prefix = YEL "[WARNING]";
+		break;
+	case LOG_ERROR:
+		prefix = MAG "[ ERROR ]";
+		break;
+	case LOG_FATAL:
+		prefix = RED "[ FATAL ]";
+		break;
+	}
 
-    auto tid = gettid();
+	auto tid = gettid();
 
-    //               0   123456789
-    char TColor[] = "\x1B[38;5;000m";
+	//               0   123456789
+	char TColor[] = "\x1B[38;5;000m";
 
-    auto index = 9;
-    int  Tnum  = tid % 129 + 1;
+	auto index = 9;
+	int  Tnum  = tid % 129 + 1;
 
-    for (int i = 0; i < 3; ++i) {
+	for (int i = 0; i < 3; ++i) {
 
-        char num = static_cast<char>(Tnum % 10) + '0';
-        Tnum /= 10;
-        TColor[index] = num;
-        --index;
-    }
+		char num = static_cast<char>(Tnum % 10) + '0';
+		Tnum /= 10;
+		TColor[index] = num;
+		--index;
+	}
 
-    printf("\r%s" RESET " %s[THREAD %6d] " RESET, prefix, TColor, tid);
-    vprintf(mex, args);
-    fflush(stdout);
+	printf("\r%s" RESET " %s[THREAD %6d] " RESET, prefix, TColor, tid);
+	vprintf(mex, args);
+	fflush(stdout);
 
-    va_end(args);
+	va_end(args);
 }

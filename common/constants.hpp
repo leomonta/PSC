@@ -12,10 +12,19 @@
 #define POS_TIME          0x30
 #define POS_DATA_START    0x40
 
-// Method values meaning
-#define METHOD_GET   0
-#define METHOD_POST  1
-#define VARIANT_TEXT 0
-#define VARIANT_BIN  1
+// Method values taken singularly
+#define METHOD_GET   0b00
+#define METHOD_POST  0b01
+#define METHOD_PATCH 0b10
+#define VARIANT_TEXT 0b0
+#define VARIANT_BIN  0b1
 
-#define MAX_MESSAGE_LEN 1048576
+#define MMV_GET_TEXT   0b000
+#define MMV_GET_BIN    0b001
+#define MMV_POST_TEXT  0b010
+#define MMV_POST_BIN   0b011
+#define MMV_PATCH_TEXT 0b110
+#define MMV_PATCH_BIN  0b111
+
+#define MAX_MESSAGE_LEN 1048576 // bytes
+#define TOT_HEADER_LEN  12      // bytes

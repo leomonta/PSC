@@ -32,10 +32,15 @@ void acceptClient(Socket serverSocket, bool *threadStop) {
 }
 
 void resolveClient(Socket clientSocket, bool *threadStop) {
-	
-	char *msg;
 
-	tcpConn::receiveSegmentC(clientSocket, msg);
+	while (!*threadStop) {
+		char *msg;
 
-	printf("%s\n", msg);
+		auto bytes = tcpConn::receiveSegmentC(clientSocket, msg);
+
+		if (bytes > 0) {
+		
+		
+		}
+	}
 }
