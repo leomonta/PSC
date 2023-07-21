@@ -81,7 +81,7 @@ Body => text or binary data
 
 ### Endiannes
 
-All Values should be stored in little endian 
+All Values should be stored in big endian 
 
 ## Network
 
