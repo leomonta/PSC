@@ -6,7 +6,7 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 
 ### General requirements
 
-#### Who
+#### Who is this?
 
 -   Who is doing the action (user or server)
     -   UUID 32bits of random bits given by the server to the client. Representable in 8 hex digits
@@ -14,44 +14,52 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
         -   32bits allow for 2^32 4 bln UUID, more than enough
     -   The server is UUID 00...00, unmistakable
 
-#### How
-
--   What action is being performed (Post a message to the server, get a message from the server)
-    -   Get a resource
-    -   Post a resource
-	-   Patch (edit) a past resource
-		- The specifi resource ID is specified in the body
-    -   Each with a variant
-        -   Text only, lightweight.
-        -   Res only, if you also need the binary resource
-
-#### When
+#### When did it happen?
 
 -   Time of the message being sent
     -   GMT timestamp of the message the moment the button is pressed formatted following the RFC 1123
         -   An example -> Sun, 06 Nov 1994 08:49:37, 25 bytes long, the GMT is implied
     -   The server should echo back to the client the time at which it has received the message
 
-#### What
+#### What do you want?
+
+-   What action is being performed (Post a message to the server, get a message from the server)
+    -   Get a resource
+    -   Post a resource
+    -   Patch (edit) a past resource
+        -   The specific resource ID is specified in the body
+    -   Each with a variant
+        -   Text only, lightweight.
+        -   Res only, if you also need the binary resource
+
+#### The actual body
 
 -   The Body of the message
+
     -   The text plus some referencies to media and formatting
 
 #### Version
 
 -   Protocol Version
-    -   Byte.Byte, only major and minor
+    -   4bits.4bits, only major and minor from 0.0 to 16.16
         -   1.0 for now
+
+#### How much is being transferred
+
+-   Content lenght in Bytes excluding the header
+    -   Use remaining size in the header, 20 bits, 1048576, 1MiB
 
 ### Bit map
 
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
-00 |VM Vm| M  M  V|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx|
-20 |                   U                  U                  I                  D                  |
-40 |        t         i        m         e        s         t        a         m         p         |
-60 |Body
+00 |     VM    |     Vm    | MM  | V|                            Length                            |
+20 |                                             UUID                                              |
+40 |                                           timestamp                                           |
+60 |                                             Body                                              |
 
+VM => Version Major
+Vm => Version Minor
 
 M M => 00 GET
        01 POST
@@ -59,6 +67,8 @@ M M => 00 GET
 
 V => 0 TEXT
      1 BIN
+
+Length => Lenght of the body in size
 
 timestamp => 32bit unigned int unix timestamp
 

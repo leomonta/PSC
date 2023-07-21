@@ -5,7 +5,7 @@
 			"name": "PSCClient",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/client/bin/PSCClient",
+			"program": "${workspaceFolder}/client/bin/PSCC",
 			"args": [ ],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}/client/bin/",
@@ -26,7 +26,7 @@
 			"name": "PSCServer",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/server/bin/PSCClient",
+			"program": "${workspaceFolder}/server/bin/PSCS",
 			"args": [ ],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}/server/bin/",
@@ -41,7 +41,7 @@
 					"ignoreFailures": false
 				}
 			],
-			"preLaunchTask": "PSCClient build all modified files"
+			"preLaunchTask": "PSCServer build all modified files"
 		}
 	]
 }
