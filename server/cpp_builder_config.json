@@ -13,11 +13,11 @@
 		"include_dirs": [
 			"include",
 			"ext",
-			"../common"
+			"../common/include"
 		],
 		"source_dirs": [
 			"src",
-			"../common"
+			"../common/src"
 		],
 		"temp_dir": "obj"
 	},

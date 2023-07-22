@@ -39,8 +39,6 @@ void resolveClient(Socket clientSocket, bool *threadStop) {
 		auto bytes = tcpConn::receiveSegmentC(clientSocket, msg);
 
 		if (bytes > 0) {
-		
-		
 		}
 	}
 }

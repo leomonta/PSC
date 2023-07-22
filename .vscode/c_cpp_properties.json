@@ -5,7 +5,7 @@
 			"includePath": [
 				"server/include",
 				"client/include",
-				"common"
+				"common/include"
 			],
 			"compilerArgs": [
 				"-Wconversion",

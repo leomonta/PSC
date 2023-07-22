@@ -42,6 +42,14 @@
 				}
 			],
 			"preLaunchTask": "PSCServer build all modified files"
+		},
+		{
+			"name": "Python: cpp builder",
+			"type": "python",
+			"request": "launch",
+			"program": "${file}",
+			"justMyCode": true,
+			"cwd": "${workspaceFolder}/server"
 		}
 	]
 }
