@@ -28,9 +28,9 @@ typedef struct PSCheader {
 void disassembleHeader(const char *msg, PSCheader &head);
 
 /**
- * allocate a string and puts fills it with the data from header
+ * fills the given string with the data from header
  *
- * @param msg the location where to put the pointer to the allocated string
+ * @param msg the location where to put the data, it should already be at least TOT_HEADER_LEN long
  * @param head the header where to take the data from
  */
-void assembleHeader(char **msg, const PSCheader &head);
+void assembleHeader(char *msg, const PSCheader &head);

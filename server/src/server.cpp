@@ -1,6 +1,7 @@
 #include "server.hpp"
 
 #include "constants.hpp"
+#include "header.hpp"
 #include "logger.hpp"
 #include "sslConn.hpp"
 #include "tcpConn.hpp"
@@ -8,6 +9,17 @@
 #include <thread>
 
 int main() {
+
+	PSCheader psch;
+	psch.versionMajor = 13;
+	psch.versionMinor = 10;
+
+	psch.method     = METHOD_GET << 2 | VARIANT_TEXT;
+	psch.bodyLength = 12;
+
+	char msg[TOT_HEADER_LEN];
+
+	assembleHeader(msg, psch);
 
 	auto ssck = tcpConn::initializeServer(DEFAULT_PORT, 4);
 
