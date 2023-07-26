@@ -6,21 +6,28 @@
 #include <stdio.h>
 #include <string.h>
 
-void disassembleHeader(const char *msg, PSCheader &head) {
-	head.versionMajor = *msg >> 4;
-	head.versionMinor = *msg & 0b0000'1111;
-	head.method       = msg[1] >> 5;
-	head.bodyLength   = msg[3];
-	head.bodyLength += msg[2] | 0b0001'1111;
+void disassembleHeader(const uint8_t *msg, PSCheader &head) {
 
-	// b1 b2 b3 b4
-	// b4 b3 b2 b1
+	// split version into 2
+	head.versionMajor = msg[0] >> 4;          // move the first 4 bits to the end
+	head.versionMinor = msg[0] & 0b0000'1111; // remove the first four bits
 
+	head.method = msg[1] >> 5; // we are interested only in the first 3 bits
+
+	// we can just copy the last byte in the 32bit line in the bodyLenght, that is always correct
+	head.bodyLength = msg[3];
+	// then i can add the ramaining bits
+	head.bodyLength += (msg[2] & 0b0001'1111) << 8;
+
+	// copy the 32 bits and reverse endianness
 	memcpy(&head.UUID, &msg[4], 4);
+	head.UUID = htonl(head.UUID);
+
 	memcpy(&head.timestamp, &msg[8], 4);
+	head.timestamp = htonl(head.timestamp);
 }
 
-void assembleHeader(char *msg, const PSCheader &head) {
+void assembleHeader(uint8_t *msg, const PSCheader &head) {
 	// 24 bits long
 
 	// technically htonl is not needed since tha values are store in registers (on my machine) that are already big endian

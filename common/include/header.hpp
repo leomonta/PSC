@@ -25,7 +25,7 @@ typedef struct PSCheader {
  * @param msg the message to parse it must have a size of at least HEADER_LEN
  * @param head the struct where to put the parsed data
  */
-void disassembleHeader(const char *msg, PSCheader &head);
+void disassembleHeader(const uint8_t *msg, PSCheader &head);
 
 /**
  * fills the given string with the data from header
@@ -33,4 +33,4 @@ void disassembleHeader(const char *msg, PSCheader &head);
  * @param msg the location where to put the data, it should already be at least TOT_HEADER_LEN long
  * @param head the header where to take the data from
  */
-void assembleHeader(char *msg, const PSCheader &head);
+void assembleHeader(uint8_t *msg, const PSCheader &head);

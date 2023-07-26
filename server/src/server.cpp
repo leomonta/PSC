@@ -15,15 +15,19 @@ int main() {
 	psch.versionMinor = 10;
 
 	psch.method     = METHOD_PATCH << 1 | VARIANT_BIN;
-	psch.bodyLength = 12;
+	psch.bodyLength = 500;
 
 	psch.UUID = rand() * 53;
 
 	psch.timestamp = time(0);
 
-	char msg[TOT_HEADER_LEN];
+	uint8_t msg[TOT_HEADER_LEN];
 
 	assembleHeader(msg, psch);
+
+	PSCheader nother;
+
+	disassembleHeader(msg, nother);
 
 	auto ssck = tcpConn::initializeServer(DEFAULT_PORT, 4);
 
