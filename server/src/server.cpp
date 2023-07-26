@@ -14,8 +14,12 @@ int main() {
 	psch.versionMajor = 13;
 	psch.versionMinor = 10;
 
-	psch.method     = METHOD_GET << 2 | VARIANT_TEXT;
+	psch.method     = METHOD_PATCH << 1 | VARIANT_BIN;
 	psch.bodyLength = 12;
+
+	psch.UUID = rand() * 53;
+
+	psch.timestamp = time(0);
 
 	char msg[TOT_HEADER_LEN];
 

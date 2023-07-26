@@ -111,7 +111,8 @@
 		"rcamera.h": "c",
 		"config.h": "c",
 		"math.h": "c",
-		"utils.h": "c"
+		"utils.h": "c",
+		"format": "cpp"
 	},
 	"python.formatting.provider": "yapf"
 }
