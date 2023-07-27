@@ -68,7 +68,7 @@ void log(const char logLevel, const char *mex, ...) {
 		--index;
 	}
 
-	printf("\r%s" RESET " %s[THREAD %6d] " RESET, prefix, TColor, tid);
+	printf("%s" RESET " %s[THREAD %6d] " RESET, prefix, TColor, tid);
 	vprintf(mex, args);
 	fflush(stdout);
 

@@ -55,14 +55,4 @@ void assembleHeader(uint8_t *msg, const PSCheader &head) {
 
 /*
 memory printer
-
-    for (int i = 0; i < TOT_HEADER_LEN; ++i) {
-        for (int j = 7; j >= 0; --j) {
-            unsigned char bit = (msg[i] >> j) & 1;
-            printf("%u", bit);
-        }
-        printf(" ");
-    }
-
-    printf("\n");
 */
