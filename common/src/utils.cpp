@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-void printHeader(const char *head) {
+void printHeaderStr(const char *head) {
 
 #ifdef NDEBUG
 	return
@@ -15,10 +15,11 @@ void printHeader(const char *head) {
 			unsigned char bit = (head[i] >> j) & 1;
 			printf("%u", bit);
 		}
-		if (i == 4) {
+		if (i % 4 == 3) {
 			printf("\n");
+		} else {
+			printf(" ");
 		}
-		printf(" ");
 	}
 
 	printf("\n");

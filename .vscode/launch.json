@@ -20,7 +20,7 @@
 					"ignoreFailures": false
 				}
 			],
-			"preLaunchTask": "PSCServer build all modified files"
+			"preLaunchTask": "PSCClient build all modified files"
 		},
 		{
 			"name": "PSCServer",

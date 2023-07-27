@@ -43,6 +43,7 @@ void resolveClient(Socket clientSocket, bool *threadStop) {
 
 		if (bytes > 0) {
 			PSCheader header;
+			printHeaderStr(msg);
 			disassembleHeader((uint8_t *)(msg), header);
 			printHeaderStruct(&header);
 		}

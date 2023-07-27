@@ -12,10 +12,12 @@
 		"exe_path_name": "bin/PSCC",
 		"include_dirs": [
 			"include",
-			"ext"
+			"ext",
+			"../common/include"
 		],
 		"source_dirs": [
-			"src"
+			"src",
+			"../common/src"
 		],
 		"temp_dir": "obj"
 	},
@@ -27,7 +29,8 @@
 		],
 		"libraries_names": [
 			"dl",
-			"pthread"
+			"pthread",
+			"netTcpSslDebug"
 		]
 
 	},

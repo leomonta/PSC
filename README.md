@@ -47,7 +47,7 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 #### How much is being transferred
 
 -   Content lenght in Bytes excluding the header
-    -   Use remaining size in the header, 21 bits, 2097152, max 2MiB data
+    -   Use remaining size in the header, 21 bits, 2097151, max 2MiB data
 
 ### Bit map
 

@@ -36,5 +36,5 @@ constexpr char const *VARIANTS_STR[2] = {
 #define MMV_PATCH_TEXT 0b110
 #define MMV_PATCH_BIN  0b111
 
-#define MAX_MESSAGE_LEN 1048576 // bytes
+#define MAX_MESSAGE_LEN 2097151 // bytes
 #define TOT_HEADER_LEN  12      // bytes
