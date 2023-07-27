@@ -16,8 +16,10 @@ void disassembleHeader(const uint8_t *msg, PSCheader &head) {
 
 	// we can just copy the last byte in the 32bit line in the bodyLenght, that is always correct
 	head.bodyLength = msg[3];
+	// the the second-to-last byte shifted by 8 bits
+	head.bodyLength += msg[2] << 8;
 	// then i can add the ramaining bits
-	head.bodyLength += (msg[2] & 0b0001'1111) << 8;
+	head.bodyLength += (msg[1] & 0b0001'1111) << 16;
 
 	// copy the 32 bits and reverse endianness
 	memcpy(&head.UUID, &msg[4], 4);
