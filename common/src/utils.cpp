@@ -25,3 +25,18 @@ void printHeader(const char *head) {
 
 #endif
 }
+
+void printHeaderStruct(const PSCheader *head) {
+
+#ifdef NDEBUG
+	return
+#else
+
+	printf("Header Version                 -> %d.%d\n", head->versionMajor, head->versionMinor);
+	printf("Header Method and variant      -> %s - %s\n", METHODS_STR[head->method > 1], VARIANTS_STR[head->method & 0b001]);
+	printf("Lenght of the attached data    -> %u\n", head->bodyLength);
+	printf("UUID of the sender             -> %u\n", head->UUID);
+	printf("Timestamp at which is was sent -> %u\n", head->UUID);
+
+#endif
+}

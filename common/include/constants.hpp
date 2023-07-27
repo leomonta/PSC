@@ -19,6 +19,16 @@
 #define VARIANT_TEXT 0b0
 #define VARIANT_BIN  0b1
 
+// i guess ???
+constexpr char const *METHODS_STR[3] = {
+    "METHOD_GET",
+    "METHOD_POST",
+    "METHOD_PATCH"};
+
+constexpr char const *VARIANTS_STR[2] = {
+    "VARIANT_TEXT",
+    "VARIANT_BIN"};
+
 #define MMV_GET_TEXT   0b000
 #define MMV_GET_BIN    0b001
 #define MMV_POST_TEXT  0b010

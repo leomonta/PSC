@@ -30,17 +30,16 @@ void disassembleHeader(const uint8_t *msg, PSCheader &head) {
 void assembleHeader(uint8_t *msg, const PSCheader &head) {
 	// 24 bits long
 	uint32_t method_variant = head.method;
-	uint32_t length         = head.bodyLength;
 
 	// shift the version 21 bits to the left, outside the lenght space, and limit lenght to 21 bits
-	uint32_t met_var_len = method_variant << 21 | head.bodyLength & 0b0000'0000'0001'1111'1111'1111'1111'1111;
+	uint32_t met_var_len = method_variant << 21 | (head.bodyLength & 0b0000'0000'0001'1111'1111'1111'1111'1111);
 
 	// copy 32 bits in the string
 	uint32_t first_line = htonl(met_var_len);
 	memcpy(&msg[0], &first_line, 4);
 
 	// compact the two versions in one byte
-	uint8_t version = head.versionMajor << 4 | head.versionMinor & 0b00001111;
+	uint8_t version = head.versionMajor << 4 | (head.versionMinor & 0b00001111);
 
 	// copy the int the first byte
 	msg[0] = version;
@@ -52,7 +51,3 @@ void assembleHeader(uint8_t *msg, const PSCheader &head) {
 	auto timestamp = htonl(head.timestamp);
 	memcpy(&msg[8], &timestamp, 4);
 }
-
-/*
-memory printer
-*/

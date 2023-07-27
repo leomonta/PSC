@@ -5,29 +5,11 @@
 #include "logger.hpp"
 #include "sslConn.hpp"
 #include "tcpConn.hpp"
+#include "utils.hpp"
 
 #include <thread>
 
 int main() {
-
-	PSCheader psch;
-	psch.versionMajor = 13;
-	psch.versionMinor = 10;
-
-	psch.method     = METHOD_PATCH << 1 | VARIANT_BIN;
-	psch.bodyLength = 500;
-
-	psch.UUID = rand() * 53;
-
-	psch.timestamp = time(0);
-
-	uint8_t msg[TOT_HEADER_LEN];
-
-	assembleHeader(msg, psch);
-
-	PSCheader nother;
-
-	disassembleHeader(msg, nother);
 
 	auto ssck = tcpConn::initializeServer(DEFAULT_PORT, 4);
 
@@ -48,6 +30,7 @@ void acceptClient(Socket serverSocket, bool *threadStop) {
 		}
 
 		std::thread(resolveClient, client, threadStop).detach();
+		log(LOG_INFO, "Launched thread for resolving the client %d request.\n", client);
 	}
 }
 
@@ -59,6 +42,12 @@ void resolveClient(Socket clientSocket, bool *threadStop) {
 		auto bytes = tcpConn::receiveSegmentC(clientSocket, msg);
 
 		if (bytes > 0) {
+			PSCheader header;
+			disassembleHeader((uint8_t *)(msg), header);
+			printHeaderStruct(&header);
+		}
+		if (bytes <= 0) {
+			return;
 		}
 	}
 }
