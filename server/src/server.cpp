@@ -16,7 +16,6 @@ int main() {
 	auto stopAllThreads = false;
 
 	acceptClient(ssck, &stopAllThreads);
-	// Wait for
 }
 
 void acceptClient(Socket serverSocket, bool *threadStop) {
