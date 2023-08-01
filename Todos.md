@@ -1,8 +1,11 @@
 
 - [ ] Both
 	- [x] Sketching the protocol
-	- [ ] trying to use the protocol for both client and server
+	- [x] trying to use the protocol for both client and server
 	- [ ] encryption
+	- [ ] Storage
+		- [ ] UUID:[public key]:uname in single file
+		- [ ]
 
 - [ ] Server
 	- [ ] Message log

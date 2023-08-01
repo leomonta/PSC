@@ -2,6 +2,8 @@
 
 A simple client-server encrypted chat built on top TCP for personal use and small groups
 
+---
+
 ## The Communication is based on a binary custom protocol described here
 
 ### General requirements
@@ -49,6 +51,8 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 -   Content lenght in Bytes excluding the header
     -   Use remaining size in the header, 21 bits, 2097151, max 2MiB data
 
+### Digital signature (WIP)
+
 ### Bit map
 
 ```
@@ -59,29 +63,32 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 60 |                                             Body                                              |
 ...|                                                                                               |
 
-VM => Version Major
-Vm => Version Minor
+VM        => Version Major
 
-M M => 00 GET
-       01 POST
-       10 PATCH
+Vm        => Version Minor
 
-V => 0 TEXT
-     1 BIN
+M M       => 00 GET
+             01 POST
+             10 PATCH
 
-length => Lenght of the body in size
+V         => 0 TEXT
+             1 BIN
+
+length    => Lenght of the body in size
 
 timestamp => 32bit unigned int unix timestamp
 
-UUID => Unique User ID
+UUID      => Unique User ID
 
-Body => text or binary data
+Body      => text or binary data
 
 ```
 
 ### Endiannes
 
-All Values should be stored in big endian 
+All Values should be stored in big endian
+
+---
 
 ## Network
 
@@ -99,9 +106,74 @@ This header does not contain sensitive data, the UUID means who is talking for t
 
 Tcp
 
+---
+
+## Storage
+
+The data that needs to be stored in quite simple
+
+We need to store users, their messages and their resources it possible to just put these in a file
+
+```
+bin
+├── PSCS
+├── msgs
+│   ├── 0-100
+│   ├── 101-200
+│   └── ...-...
+└── res
+    ├── a0b1c2d3.png
+    ├── a1b2c3d4.txt
+    └── f7d539bc.dae
+```
+
+### Users
+
+Need UUID, username and publi key
+
+Even if there were 1000 users it wouldn't be a problem to just search the correct one
+
+```
+    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
+00 |                                             UUID                                              |
+20 |                                             uname                                             |
+*64
+40 |                                             Key                                               |
+...|...............................................................................................|
+
+UUID => The User Unique IDentificator of the user
+Body => 256 bytes for an UTF-8 user name to show to other users
+Key  => The user public key, used to confirm its digital signature
+```
+
+### Messages
+
+Need message body (UTF-8 text), author (UUID), relative resources, previous message ID
+
+```
+    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
+00 |                                             UUID                                              |
+20 |                                             MSGID                                             |
+40 |                                             Body                                              |
+...|...............................................................................................|
+...|                                             Resname                                           |
+...|...............................................................................................|
+
+UUID    => The author UUID
+MSGID   => The message ID, an unsigned 32bit integer profressing from 0
+Body    => The body of the message as a UTF-8 list
+Resname => A list of resources names, names are always 32bits stored on hex notation
+```
+
+### Resources
+
+Resources are genrally binary files associated with a message They are simply stored with a randomlly generated name (64bits int hex notation)
+
+---
+
 ## Graphics
 
-dsad
+Lorem ipsum dolor sit amete
 
 ### messages
 
