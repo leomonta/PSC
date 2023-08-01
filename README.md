@@ -148,8 +148,6 @@ Key  => The user public key, used to confirm its digital signature
 
 ### Messages
 
-Need message body (UTF-8 text), author (UUID), relative resources, previous message ID
-
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
 00 |                                             UUID                                              |
@@ -162,12 +160,12 @@ Need message body (UTF-8 text), author (UUID), relative resources, previous mess
 UUID    => The author UUID
 MSGID   => The message ID, an unsigned 32bit integer profressing from 0
 Body    => The body of the message as a UTF-8 list
-Resname => A list of resources names, names are always 32bits stored on hex notation
+Resname => A list of resources names, names are always 64bits stored on hex notation
 ```
 
 ### Resources
 
-Resources are genrally binary files associated with a message They are simply stored with a randomlly generated name (64bits int hex notation)
+Resources are genrally binary files associated with a message. They are simply stored with a randomlly generated name (64bits in hex notation)
 
 ---
 
