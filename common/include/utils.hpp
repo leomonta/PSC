@@ -3,6 +3,7 @@
 #include "header.hpp"
 
 #include <stddef.h>
+#include <stdio.h>
 
 /**
  * Given a string at least TOT_HEADER_LEN long prints its bytes, 4 per line
@@ -43,13 +44,13 @@ const char *strnstr(const char *haystack, const char *needle, const size_t count
 /**
  * Find the given string in the given file line by line
  * if found set line and pos to the line number and column of the first occurrence
- * 
+ *
  * @param toSearch string to search in the file, must be null terminated
  * @param file to seach into
  * @param line line number of the found string
  * @param col column in the line of the found string
- * 
+ *
  * @return true if the string was found in the file, false if not
  * if return false the value of line and col shound be discarded
  */
-bool findInFile(const char* toSearch, FILE *file, size_t *line, size_t *col);
+bool findInFile(const char *toSearch, FILE *file, size_t *line, size_t *col);

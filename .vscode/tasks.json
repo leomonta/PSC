@@ -6,7 +6,11 @@
 			"label": "PSCClient build all modified files",
 			"command": "cpp_builder.py",
 			"options": {
-				"cwd": "${workspaceFolder}/client"
+				"cwd": "${workspaceFolder}/client",
+				"shell": {
+					"executable": "st",
+					"args": [ "-e", "alt" ]
+				},
 			},
 			"problemMatcher": [
 				"$gcc"
@@ -15,7 +19,7 @@
 				"echo": true,
 				"reveal": "always",
 				"focus": true,
-				"panel": "shared",
+				"panel": "dedicated",
 				"showReuseMessage": true,
 				"clear": true
 			},
@@ -29,7 +33,11 @@
 			"label": "PSCServer build all modified files",
 			"command": "cpp_builder.py",
 			"options": {
-				"cwd": "${workspaceFolder}/server"
+				"cwd": "${workspaceFolder}/server",
+				"shell": {
+					"executable": "st",
+					"args": [ "-e", "alt" ]
+				},
 			},
 			"problemMatcher": [
 				"$gcc"
@@ -52,7 +60,11 @@
 			"label": "PSCClient build all files",
 			"command": "cpp_builder.py -a",
 			"options": {
-				"cwd": "${workspaceFolder}/client"
+				"cwd": "${workspaceFolder}/client",
+				"shell": {
+					"executable": "st",
+					"args": [ "-e", "alt" ]
+				},
 			},
 			"problemMatcher": [
 				"$gcc"
@@ -75,7 +87,11 @@
 			"label": "PSCServer build all files",
 			"command": "cpp_builder.py -a",
 			"options": {
-				"cwd": "${workspaceFolder}/server"
+				"cwd": "${workspaceFolder}/server",
+				"shell": {
+					"executable": "st",
+					"args": [ "-e", "alt" ]
+				},
 			},
 			"problemMatcher": [
 				"$gcc"

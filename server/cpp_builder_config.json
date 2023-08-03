@@ -23,7 +23,7 @@
 	},
 
 	"debug": {
-		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fsanitize=address -fsanitize=leak",
+		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fanalyzer -fsanitize=address -fsanitize=leak",
 		"linker_args": "-fsanitize=address -fsanitize=leak",
 		"libraries_dirs": [
 		],

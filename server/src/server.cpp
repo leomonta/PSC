@@ -6,10 +6,21 @@
 #include "sslConn.hpp"
 #include "tcpConn.hpp"
 #include "utils.hpp"
+#include "user.hpp"
 
 #include <thread>
 
 int main() {
+
+	userFull tmp;
+
+	tmp.UUID = rand();
+	auto uname = "A really complex name with utf-8 shit in it";
+	memcpy(tmp.uname, uname, 44);
+
+	saveUser(&tmp);
+ 
+	return 0;
 
 	auto ssck = tcpConn::initializeServer(DEFAULT_PORT, 4);
 

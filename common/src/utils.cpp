@@ -96,6 +96,8 @@ bool findInFile(const char* toSearch, FILE *file, size_t *line, size_t *pos) {
 
 	bool userAlreadySaved = false;
 
+	*line = 0;
+
 	size_t len  = 0;
 	char  *linestr = nullptr;
 	while (true) {
@@ -104,14 +106,17 @@ bool findInFile(const char* toSearch, FILE *file, size_t *line, size_t *pos) {
 			break;
 		}
 
+		++(*line);
+
 		auto foundPos = strnstr(linestr, toSearch, read);
 		if (foundPos != nullptr) {
+			*pos = foundPos - linestr;
 			return true;
 		}
 	}
 
-	if (line) {
-		free(line);
+	if (linestr) {
+		free(linestr);
 	}
 
 	return false;

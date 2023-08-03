@@ -4,15 +4,20 @@
 
 typedef struct userFull {
 	uint32_t UUID;
-	char    *uname[256];
+	char    uname[256];
 	void    *publicKey; // for when i put encryption
 } userFull;
+
+#define SEPARATOR '|'
 
 /**
  * Given a user struct saves it to the user.dat file
  * If the user is already present in the file, updates the data on the file
+ * 
+ * @param user the user to write to disk
+ * @return 0 if success, 1 if failure
  */
-void saveUser(const userFull user);
+int saveUser(const userFull *user);
 
 /**
  * Generate a random 32bit UUID and ensures that it's already used
