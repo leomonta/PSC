@@ -63,6 +63,7 @@ int saveUser(const userFull *user) {
 
 		if (buff == nullptr) {
 			log(LOG_ERROR, "Could not allocate %d bytes of memory\n", bufLen);
+			free(buff);
 			return 1;
 		}
 
@@ -70,12 +71,14 @@ int saveUser(const userFull *user) {
 		fread(buff, 1, fileLen, file);
 
 		if (ferror(file) != 0) {
+			free(buff);
 			return 1;
 		}
 
 		// needed to prevent strchr from going rogue
 		buff[bufLen - 1] = '\0';
 		if (fseek(file, 0, SEEK_SET) != 0) {
+			free(buff);
 			return 1;
 		}
 
