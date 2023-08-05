@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
 void printHeaderStr(const char *head) {
 
@@ -103,16 +105,17 @@ bool findInFile(const char* toSearch, FILE *file, size_t *line, size_t *pos) {
 	while (true) {
 		auto read = getline(&linestr, &len, file);
 		if (read == -1) {
+			printf("%s\n", strerror(errno));
 			break;
 		}
-
-		++(*line);
 
 		auto foundPos = strnstr(linestr, toSearch, read);
 		if (foundPos != nullptr) {
 			*pos = foundPos - linestr;
 			return true;
 		}
+
+		++(*line);
 	}
 
 	if (linestr) {
