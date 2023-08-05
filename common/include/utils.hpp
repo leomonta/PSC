@@ -20,18 +20,18 @@ void printHeaderStr(const char *head);
 void printHeaderStruct(const PSCheader *head);
 
 /**
- * given a 32bit int creates a string of the hex representation
+ * given a 32bit int creates a string of its hex representation
  *
  * the string MUST be already allocated with a size of at least 8 bytes, one for each bit quartet
  *
- * @param val the value to conver
+ * @param val the value to convert
  * @param strloc the string where to put the hex representation
- * @param lowercase if true uses lowercase letters, if false uppercase letters
+ * @param lowercase if true uses lowercase letters, if false uses uppercase letters
  */
 void stringifyHex(const uint32_t val, char *strloc, const bool lowecase);
 
 /**
- * find a string needle in the null terminated string haystack while making sure that not more than count characters are compared for haystack
+ * find a string null terminated string needle in the string haystack while making sure that not more than count characters are compared for haystack
  *
  * @param haystack where to search the other given string
  * @param needle the null terminated string to search for
@@ -46,7 +46,7 @@ const char *strnstr(const char *haystack, const char *needle, const size_t count
  * if found set line and pos to the line number and column of the first occurrence
  *
  * @param toSearch string to search in the file, must be null terminated
- * @param file to seach into
+ * @param file the file to seach into
  * @param line line number of the found string
  * @param col column in the line of the found string
  *

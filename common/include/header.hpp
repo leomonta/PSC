@@ -2,13 +2,6 @@
 
 #include <stdint.h>
 
-// #define GET_PSC_VER_ALL(header) (char)(header.version >> 24)
-// #define GET_PSC_VER_MAJ(header) (char)(header.version >> 28)
-// #define GET_PSC_VER_MIN(header) ((char)(header.version >> 24) & 0b0000'1111)
-// #define GET_PSC_MET_COD(header) ((char)(header.version >> 22) & 0b0000'0011)
-// #define GET_PSC_MET_VAR(header) ((char)(header.version >> 21) & 0b0000'0001)
-// #define GET_PSC_LEN_GTH(header) (uint32_t)(header.version & 0b0000'0000'0001'1111'1111'1111'1111'1111)
-
 typedef struct PSCheader {
 	uint8_t  versionMajor;
 	uint8_t  versionMinor;

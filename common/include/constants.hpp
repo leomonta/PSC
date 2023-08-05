@@ -19,7 +19,7 @@
 #define VARIANT_TEXT 0b0
 #define VARIANT_BIN  0b1
 
-// i guess ???
+// i guess constexpr char const works
 constexpr char const *METHODS_STR[3] = {
     "METHOD_GET",
     "METHOD_POST",

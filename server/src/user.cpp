@@ -9,6 +9,7 @@
 #include <string.h>
 
 int saveUser(const userFull *user) {
+	// I use errno to check for errors
 	errno     = 0;
 	auto file = fopen("./users.dat", "r+b");
 
@@ -25,66 +26,93 @@ int saveUser(const userFull *user) {
 		return 1;
 	}
 
-	// now we have and actual file that exist
+	// now we have an open file rw bìin binary positioned at the start
 
 	auto namelen = strlen(user->uname);
 
-	// space for the hex repr of the UUID the '|' separator and the entire name
+	// space for the hex repr of the UUID (8) the '|' (1) separator and the entire name (namelen)
 	auto lineLen = 8 + 1 + namelen;
-	char UUID_name[lineLen];
+	char UUID_name[lineLen]; // stack allocated
 
 	stringifyHex(user->UUID, UUID_name, true);
 
-	// temporarily use the null terminator here
-	UUID_name[8]   = '\0';
+	// temporarily use the null terminator here for searching this in the file
+	UUID_name[8] = '\0';
+	// complete the string with the username
 	strncpy(&UUID_name[9], user->uname, namelen);
 	size_t lineNum = 0;
 	size_t colNum  = 0;
 
+	// FIXME: by calling findInFile and then reading it again in a buff i'm reading the entire file twice
 	if (findInFile(UUID_name, file, &lineNum, &colNum)) {
 
-		fseek(file, 0, SEEK_END);
+		// get the file len
+		if (fseek(file, 0, SEEK_END) != 0) {
+			return 1;
+		}
 		auto fileLen = ftell(file);
-		fseek(file, 0, SEEK_SET);
+
+		// return at start
+		if (fseek(file, 0, SEEK_SET) != 0) {
+			return 1;
+		}
 
 		// entire file + the entire line
-		auto bufLen = fileLen + lineLen;
-		char *buff = (char *)(malloc(bufLen));
+		auto  bufLen = fileLen + 1;
+		char *buff   = (char *)(malloc(bufLen));
+
+		if (buff == nullptr) {
+			log(LOG_ERROR, "Could not allocate %d bytes of memory\n", bufLen);
+			return 1;
+		}
 
 		// read the file into the buffer
 		fread(buff, 1, fileLen, file);
 
-		buff[fileLen] = '\0';
-
-		int   nl  = 0;
-		char *pos = buff;
-
-		while (nl < lineNum) {
-			pos = strchr(pos, '\n') + 1;
-			nl += pos != nullptr ? 1 : 0;
+		if (ferror(file) != 0) {
+			return 1;
 		}
 
-		// i have the intial position of the line that i have to overwrite
+		// needed to prevent strchr from going rogue
+		buff[bufLen - 1] = '\0';
+		if (fseek(file, 0, SEEK_SET) != 0) {
+			return 1;
+		}
 
-		auto write_ptr = pos + lineLen;
-		auto read_ptr  = strchr(pos, '\n'); // get the start of the next line
+		// I write line per line the old conent of the file, 
+		// when i get to the line i have to replace i write the new line and skip the old
 
+
+		size_t nl  = 0;
+		char  *pos = buff;
+
+		// lines pre modification
+		while (nl < lineNum) {
+			auto pos_n = strchr(pos, '\n') + 1; // strchr points to the \n, skip it
+			fwrite(pos, 1, pos_n - pos, file);
+			pos = pos_n;
+			++nl;
+		}
+
+		// modified line
+		UUID_name[8] = SEPARATOR;
+		fwrite(UUID_name, 1, lineLen, file);
+		fwrite("\n", 1, 1, file);
+
+		// skip the old replace line
+		pos = strchr(pos, '\n') + 1;
+
+		// lines post modification
 		while (true) {
-			*write_ptr++ = *read_ptr++;
-			if (write_ptr == buff + bufLen) {
+			auto pos_n = strchr(pos, '\n') + 1; // strchr points to the \n, skip it
+			if (pos_n == (char *)(1)) { // nullptr + 1
 				break;
 			}
+			fwrite(pos, 1, pos_n - pos, file);
+			pos = pos_n;
 		}
 
-		// replace the line with the old info
-		UUID_name[8] = '|';
-		for (int i = 0; i < lineLen; ++i) {
-			pos[i] = UUID_name[i];
-		}
-
-		fseek(file, 0, SEEK_SET);
-		fwrite(buff, 1, strlen(buff), file);
-		// rewrite the data in the file
+		fwrite(pos, 1, buff + fileLen - pos, file);
 
 		free(buff);
 

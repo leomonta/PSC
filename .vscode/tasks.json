@@ -7,10 +7,6 @@
 			"command": "cpp_builder.py",
 			"options": {
 				"cwd": "${workspaceFolder}/client",
-				"shell": {
-					"executable": "st",
-					"args": [ "-e", "alt" ]
-				},
 			},
 			"problemMatcher": [
 				"$gcc"
@@ -34,10 +30,6 @@
 			"command": "cpp_builder.py",
 			"options": {
 				"cwd": "${workspaceFolder}/server",
-				"shell": {
-					"executable": "st",
-					"args": [ "-e", "alt" ]
-				},
 			},
 			"problemMatcher": [
 				"$gcc"
@@ -61,10 +53,6 @@
 			"command": "cpp_builder.py -a",
 			"options": {
 				"cwd": "${workspaceFolder}/client",
-				"shell": {
-					"executable": "st",
-					"args": [ "-e", "alt" ]
-				},
 			},
 			"problemMatcher": [
 				"$gcc"
@@ -88,10 +76,6 @@
 			"command": "cpp_builder.py -a",
 			"options": {
 				"cwd": "${workspaceFolder}/server",
-				"shell": {
-					"executable": "st",
-					"args": [ "-e", "alt" ]
-				},
 			},
 			"problemMatcher": [
 				"$gcc"

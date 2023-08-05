@@ -8,6 +8,9 @@ typedef struct userFull {
 	void    *publicKey; // for when i put encryption
 } userFull;
 
+// separator used in the users.dat file to separate the different data
+// This symbol could be used in the user name, but that is not a problem,
+// since we can just check The first and / or the last one, since the UUID does not include this symbol
 #define SEPARATOR '|'
 
 /**

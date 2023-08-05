@@ -2,10 +2,10 @@
 
 #include "constants.hpp"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 
 void printHeaderStr(const char *head) {
 
@@ -13,14 +13,20 @@ void printHeaderStr(const char *head) {
 	return
 #else
 
+	// for all the byte of the header (4 * 32bits )
 	for (int i = 0; i < TOT_HEADER_LEN; ++i) {
+
+		// for all the bits in a byte in reverse
 		for (int j = 7; j >= 0; --j) {
 			unsigned char bit = (head[i] >> j) & 1;
 			printf("%u", bit);
 		}
+		
+		// if we printed 32 bits / 4 bytes, newline
 		if (i % 4 == 3) {
 			printf("\n");
 		} else {
+			// else make space
 			printf(" ");
 		}
 	}
@@ -52,15 +58,15 @@ void stringifyHex(const uint32_t val, char *strloc, const bool lowercase) {
 		a = 'a';
 	}
 
-	// 8 quartets 0x0000 in 32 bits
+	// 8 quartets (0b0000) in 32 bits
 	for (int i = 0; i < 8; ++i, strloc++) {
-		uint8_t quartet = val >> (8 - i - 1) * 4; // consiedare the correct quartet starting from the right-most
-		quartet &= 0b1111;                        // removes evetyhing other than the first 4 bits
+		uint8_t quartet = (uint8_t)(val >> (8 - i - 1) * 4); // consider the correct quartet starting from the right-most one
+		quartet &= 0b1111;                                   // removes evetyhing other than the first 4 bits
 
 		if (quartet < 10) {
-			*strloc = '0' + quartet;
+			*strloc = (uint8_t)('0' + quartet);
 		} else {
-			*strloc = a + quartet - 10;
+			*strloc = (uint8_t)(a + quartet - 10);
 		}
 	}
 }
@@ -71,10 +77,12 @@ const char *strnstr(const char *haystack, const char *needle, const size_t count
 		return nullptr;
 	}
 
+	// position we are checking on the needle string
 	auto Itr = 0;
 
 	for (size_t i = 0; i < count; ++i) {
 
+		// match, advance the search
 		if (haystack[i] == needle[Itr]) {
 			++Itr;
 			if (needle[Itr] == '\0') {
@@ -82,8 +90,8 @@ const char *strnstr(const char *haystack, const char *needle, const size_t count
 				return haystack + i - Itr + 1;
 			}
 
+		// no match, reset the search
 		} else {
-			// reset back the search
 			i -= Itr;
 			Itr = 0;
 		}
@@ -93,26 +101,35 @@ const char *strnstr(const char *haystack, const char *needle, const size_t count
 	return nullptr;
 }
 
-
-bool findInFile(const char* toSearch, FILE *file, size_t *line, size_t *pos) {
-
-	bool userAlreadySaved = false;
+bool findInFile(const char *toSearch, FILE *file, size_t *line, size_t *col) {
 
 	*line = 0;
 
-	size_t len  = 0;
+	size_t len     = 0;
+	// the linestr is automatically allocated by getline, but we need to free it at the end
 	char  *linestr = nullptr;
+
+	bool res = false;
+
+	// search file line by lide
 	while (true) {
 		auto read = getline(&linestr, &len, file);
+
+
+		// reached eof
 		if (read == -1) {
-			printf("%s\n", strerror(errno));
+			res = false;
 			break;
 		}
 
 		auto foundPos = strnstr(linestr, toSearch, read);
 		if (foundPos != nullptr) {
-			*pos = foundPos - linestr;
-			return true;
+			// save the column
+			*col = foundPos - linestr;
+
+			// found!
+			res = true;
+			break;
 		}
 
 		++(*line);
@@ -122,5 +139,5 @@ bool findInFile(const char* toSearch, FILE *file, size_t *line, size_t *pos) {
 		free(linestr);
 	}
 
-	return false;
+	return res;
 }
