@@ -20,6 +20,7 @@ int logNfree(char *buff) {
 	return 1;
 }
 
+// I don't like this, but i don't know how to do better
 int saveUser(const userFull *user) {
 	// I use errno to check for errors
 	errno     = NO_ERR;
@@ -62,14 +63,14 @@ int saveUser(const userFull *user) {
 	if (findInFile(UUID_name, file, &lineNum, &colNum)) {
 
 		// get the file len
-		if (fseek(file, 0, SEEK_END) != 0) {
+		if (fseek(file, 0, SEEK_END)) {
 			fileErrLog();
 			return 1;
 		}
 		auto fileLen = ftell(file);
 
 		// return at start
-		if (fseek(file, 0, SEEK_SET) != 0) {
+		if (fseek(file, 0, SEEK_SET)) {
 			fileErrLog();
 			return 1;
 		}
@@ -92,7 +93,7 @@ int saveUser(const userFull *user) {
 		// needed to prevent strchr from going rogue
 		buff[bufLen - 1] = '\0';
 
-		if (!fseek(file, 0, SEEK_SET)) {
+		if (fseek(file, 0, SEEK_SET)) {
 			return logNfree(buff);
 		}
 
@@ -146,7 +147,7 @@ int saveUser(const userFull *user) {
 		free(buff);
 
 	} else {
-		if (!fseek(file, 0, SEEK_END)) {
+		if (fseek(file, 0, SEEK_END)) {
 			fileErrLog();
 			return 1;
 		}

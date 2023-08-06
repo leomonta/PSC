@@ -5,21 +5,22 @@
 #include "logger.hpp"
 #include "sslConn.hpp"
 #include "tcpConn.hpp"
-#include "utils.hpp"
 #include "user.hpp"
+#include "utils.hpp"
 
 #include <thread>
 
 int main() {
 
-	userFull tmp;
+	for (int i = 0; i < 10; ++i) {
+		userFull tmp;
 
-	tmp.UUID = rand();
-	auto uname = "A really complex name with utf-8 shit in it";
-	memcpy(tmp.uname, uname, 44);
+		tmp.UUID   = rand();
+		auto uname = "kjbdfafubhjrniaruihrhui ruih oiow rhui ";
+		memcpy(tmp.uname, uname, strlen(uname));
 
-	saveUser(&tmp);
- 
+		saveUser(&tmp);
+	}
 	return 0;
 
 	auto ssck = tcpConn::initializeServer(DEFAULT_PORT, 4);
