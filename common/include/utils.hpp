@@ -20,6 +20,16 @@ void printHeaderStr(const char *head);
 void printHeaderStruct(const PSCheader *head);
 
 /**
+ * Given a string containing the hex representation of a 32bit integer un stringify it into the given uint32_t
+ * 
+ * @param strloc the string to unstringify
+ * @param dest where to put the result
+ * 
+ * @return 0 if successfull, 1 otherwise
+ */
+int unStringifyHex(const char *strloc, uint32_t *dest);
+
+/**
  * given a 32bit int creates a string of its hex representation
  *
  * the string MUST be already allocated with a size of at least 8 bytes, one for each bit quartet

@@ -12,15 +12,15 @@
 
 int main() {
 
-	for (int i = 0; i < 10; ++i) {
-		userFull tmp;
+	userFull tmp;
 
-		tmp.UUID   = rand();
-		auto uname = "kjbdfafubhjrniaruihrhui ruih oiow rhui ";
-		memcpy(tmp.uname, uname, strlen(uname));
+	
+	genUUID(&tmp.UUID);
 
-		saveUser(&tmp);
-	}
+	auto uname = "somethig fiungisubg";
+	memcpy(tmp.uname, uname, strlen(uname));
+
+	saveUser(&tmp);
 	return 0;
 
 	auto ssck = tcpConn::initializeServer(DEFAULT_PORT, 4);

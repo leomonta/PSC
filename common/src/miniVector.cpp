@@ -19,12 +19,26 @@ void append(miniVector *vec, void *element) {
 		grow(vec);
 	}
 
-	memcpy(vec->data + (vec->count * vec->elementSize), element, vec->elementSize);
+	memcpy((char *)(vec->data) + (vec->count * vec->elementSize), element, vec->elementSize);
 
 	++(vec->count);
 }
 
 void grow(miniVector *vec) {
-	vec->data = realloc(vec->data, vec->capacity * 2);
 	vec->capacity *= 2;
+	vec->data = realloc(vec->data, vec->elementSize * vec->capacity);
+}
+
+void destroyMiniVector(miniVector *vec) {
+	// such logic
+	free(vec->data);
+}
+
+void *getElement(const miniVector *vec, const size_t index) {
+	if (index >= vec->count) {
+		// invalid pos
+		return nullptr;
+	}
+
+	return (char *)(vec->data) + (index * vec->elementSize);
 }

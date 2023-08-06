@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 // since i check many times for io errors, i'm gonna use a single function to print the message, so i can replace it easily if needed
 void fileErrLog() {
@@ -105,8 +106,8 @@ int saveUser(const userFull *user) {
 
 		// lines pre modification
 		while (nl < lineNum) {
-			auto pos_n = strchr(pos, '\n') + 1; // strchr points to the \n, skip it
-			auto sz    = pos_n - pos;
+			auto   pos_n = strchr(pos, '\n') + 1; // strchr points to the \n, skip it
+			size_t sz    = pos_n - pos;
 			if (fwrite(pos, 1, sz, file) < sz) {
 				return logNfree(buff);
 			}
@@ -132,14 +133,14 @@ int saveUser(const userFull *user) {
 			if (pos_n == (char *)(1)) {         // nullptr + 1
 				break;
 			}
-			auto sz = pos_n - pos;
+			size_t sz = pos_n - pos;
 			if (fwrite(pos, 1, sz, file) < sz) {
 				return logNfree(buff);
 			}
 			pos = pos_n;
 		}
 
-		auto sz = buff + fileLen - pos;
+		size_t sz = buff + fileLen - pos;
 		if (fwrite(pos, 1, sz, file) < sz) {
 			return logNfree(buff);
 		}
@@ -164,5 +165,105 @@ int saveUser(const userFull *user) {
 	}
 
 	fclose(file);
+	return 0;
+}
+
+/*
+ * parse a str to a userFull struct and puts it in dest
+ */
+int toUserFull(const char *str, userFull *dest) {
+
+	// the line should be something like
+	// a1b2c3d4|username.....
+
+	// UUID len (8) + Separator (1) + minimum name size (1);
+	if (strlen(str) < 8 + 1 + 1) {
+		return 1; // not a valid line
+	}
+
+	// extract the UUID
+	//  I don't need to modify the string in any way since unstringify check only the first 8 positions
+	if (unStringifyHex(str, &dest->UUID)) {
+		// first 8 bytes are not a hex representation
+		return 1;
+	}
+
+	strncpy(dest->uname, str + 9, MAX_UNAME_LEN - 1);
+	dest->uname[MAX_UNAME_LEN - 1] = '\0'; // ensures a null terminator in all cases
+
+	return 0;
+}
+
+int getAllUsers(miniVector *users) {
+
+	// I use errno to check for errors
+	errno     = NO_ERR;
+	auto file = fopen("./users.dat", "r");
+
+	// file does not exist, just use the candidate
+	if (errno == ENOENT) {
+		return 1;
+	}
+	// opening failed for other reasons
+	if (errno != NO_ERR) {
+		log(LOG_ERROR, "File opening failed -> %s\n", strerror(errno));
+		fclose(file);
+		return 2;
+	}
+
+	// the linestr is automatically allocated by getline, but we need to free it at the end
+	char  *linestr = nullptr;
+	size_t len     = 0;
+
+	userFull curr;
+
+	ssize_t read = 0;
+	// search file line by lide
+	while (read != -1) {
+		read = getline(&linestr, &len, file);
+		if (!toUserFull(linestr, &curr)) {
+			append(users, &curr);
+		}
+	}
+
+	if (linestr) {
+		free(linestr);
+	}
+
+	fclose(file);
+	return 0;
+}
+
+int genUUID(uint32_t *num) {
+	// not really need a secure random
+	srand((unsigned int)(time(0)));
+	uint32_t candidate = rand();
+
+	// TODO
+	// Yes this allocates 5 * sizeof(userFull) -> 5 * (256 + 4) -> 1300 bytes
+	// maybe in the future i will use somthing smaller
+	miniVector allUsrs = makeMiniVector(sizeof(userFull), 5);
+
+	// file does not exist, cannot collide with other UUIDs
+	if (getAllUsers(&allUsrs) == 1) {
+		*num = candidate;
+		return 1;
+	};
+
+	for (size_t i = 0; i < allUsrs.count; ++i) {
+		auto elem = (userFull *)(getElement(&allUsrs, i));
+		if (candidate == elem->UUID) {
+			candidate = rand();
+
+			// restart
+			i = 0;
+			continue;
+		}
+	}
+
+	*num = candidate;
+
+	destroyMiniVector(&allUsrs);
+
 	return 0;
 }

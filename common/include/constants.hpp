@@ -41,3 +41,5 @@ constexpr char const *VARIANTS_STR[2] = {
 
 // misc
 #define NO_ERR 0
+
+#define MAX_UNAME_LEN 256
