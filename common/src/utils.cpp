@@ -115,7 +115,6 @@ bool findInFile(const char *toSearch, FILE *file, size_t *line, size_t *col) {
 	while (true) {
 		auto read = getline(&linestr, &len, file);
 
-
 		// reached eof
 		if (read == -1) {
 			res = false;

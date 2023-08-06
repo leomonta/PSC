@@ -1,5 +1,6 @@
 #include "user.hpp"
 
+#include "constants.hpp"
 #include "logger.hpp"
 #include "utils.hpp"
 
@@ -8,25 +9,37 @@
 #include <stdlib.h>
 #include <string.h>
 
+// since i check many times for io errors, i'm gonna use a single function to print the message, so i can replace it easily if needed
+void fileErrLog() {
+	log(LOG_ERROR, "A file error occurred while saving the user to disk\n");
+}
+
+int logNfree(char *buff) {
+	fileErrLog();
+	free(buff);
+	return 1;
+}
+
 int saveUser(const userFull *user) {
 	// I use errno to check for errors
-	errno     = 0;
+	errno     = NO_ERR;
 	auto file = fopen("./users.dat", "r+b");
 
 	// file does not exist, create it
 	if (errno == ENOENT) { // no such file or directory
-		errno = 0;
-		file  = fopen("./users.dat", "wb");
+		errno = NO_ERR;
+		log(LOG_DEBUG, "users file not found, creating a new one\n");
+		file = fopen("./users.dat", "wb");
 	}
 
 	// opening failed for other reasons
-	if (errno != 0) {
+	if (errno != NO_ERR) {
 		log(LOG_ERROR, "File opening failed -> %s\n", strerror(errno));
 		fclose(file);
 		return 1;
 	}
 
-	// now we have an open file rw bìin binary positioned at the start
+	// now we have an open file rw in binary positioned at the start
 
 	auto namelen = strlen(user->uname);
 
@@ -38,22 +51,26 @@ int saveUser(const userFull *user) {
 
 	// temporarily use the null terminator here for searching this in the file
 	UUID_name[8] = '\0';
+
 	// complete the string with the username
 	strncpy(&UUID_name[9], user->uname, namelen);
+
 	size_t lineNum = 0;
 	size_t colNum  = 0;
 
-	// FIXME: by calling findInFile and then reading it again in a buff i'm reading the entire file twice
+	// FIXME: by calling findInFile and then reading thee file again in a buff i'm reading the entire file twice
 	if (findInFile(UUID_name, file, &lineNum, &colNum)) {
 
 		// get the file len
 		if (fseek(file, 0, SEEK_END) != 0) {
+			fileErrLog();
 			return 1;
 		}
 		auto fileLen = ftell(file);
 
 		// return at start
 		if (fseek(file, 0, SEEK_SET) != 0) {
+			fileErrLog();
 			return 1;
 		}
 
@@ -69,22 +86,18 @@ int saveUser(const userFull *user) {
 
 		// read the file into the buffer
 		fread(buff, 1, fileLen, file);
-
-		if (ferror(file) != 0) {
-			free(buff);
-			return 1;
+		if (!ferror(file)) {
+			return logNfree(buff);
 		}
-
 		// needed to prevent strchr from going rogue
 		buff[bufLen - 1] = '\0';
-		if (fseek(file, 0, SEEK_SET) != 0) {
-			free(buff);
-			return 1;
+
+		if (!fseek(file, 0, SEEK_SET)) {
+			return logNfree(buff);
 		}
 
-		// I write line per line the old conent of the file, 
+		// I write line per line the old content of the file,
 		// when i get to the line i have to replace i write the new line and skip the old
-
 
 		size_t nl  = 0;
 		char  *pos = buff;
@@ -92,15 +105,22 @@ int saveUser(const userFull *user) {
 		// lines pre modification
 		while (nl < lineNum) {
 			auto pos_n = strchr(pos, '\n') + 1; // strchr points to the \n, skip it
-			fwrite(pos, 1, pos_n - pos, file);
+			auto sz    = pos_n - pos;
+			if (fwrite(pos, 1, sz, file) < sz) {
+				return logNfree(buff);
+			}
 			pos = pos_n;
 			++nl;
 		}
 
 		// modified line
 		UUID_name[8] = SEPARATOR;
-		fwrite(UUID_name, 1, lineLen, file);
-		fwrite("\n", 1, 1, file);
+		if (fwrite(UUID_name, 1, lineLen, file) < lineLen) {
+			return logNfree(buff);
+		}
+		if (fwrite("\n", 1, 1, file) < 1) {
+			return logNfree(buff);
+		};
 
 		// skip the old replace line
 		pos = strchr(pos, '\n') + 1;
@@ -108,22 +128,38 @@ int saveUser(const userFull *user) {
 		// lines post modification
 		while (true) {
 			auto pos_n = strchr(pos, '\n') + 1; // strchr points to the \n, skip it
-			if (pos_n == (char *)(1)) { // nullptr + 1
+			if (pos_n == (char *)(1)) {         // nullptr + 1
 				break;
 			}
-			fwrite(pos, 1, pos_n - pos, file);
+			auto sz = pos_n - pos;
+			if (fwrite(pos, 1, sz, file) < sz) {
+				return logNfree(buff);
+			}
 			pos = pos_n;
 		}
 
-		fwrite(pos, 1, buff + fileLen - pos, file);
+		auto sz = buff + fileLen - pos;
+		if (fwrite(pos, 1, sz, file) < sz) {
+			return logNfree(buff);
+		}
 
 		free(buff);
 
 	} else {
-		fseek(file, 0, SEEK_END);
+		if (!fseek(file, 0, SEEK_END)) {
+			fileErrLog();
+			return 1;
+		}
 		UUID_name[8] = SEPARATOR;
-		fwrite("\n", 1, 1, file);
-		fwrite(UUID_name, 1, lineLen, file);
+
+		if (fwrite("\n", 1, 1, file) < 1) {
+			fileErrLog();
+			return 1;
+		}
+		if (fwrite(UUID_name, 1, lineLen, file) < lineLen) {
+			fileErrLog();
+			return 1;
+		}
 	}
 
 	fclose(file);

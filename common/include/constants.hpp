@@ -38,3 +38,6 @@ constexpr char const *VARIANTS_STR[2] = {
 
 #define MAX_MESSAGE_LEN 2097151 // bytes
 #define TOT_HEADER_LEN  12      // bytes
+
+// misc
+#define NO_ERR 0

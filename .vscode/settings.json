@@ -113,6 +113,5 @@
 		"math.h": "c",
 		"utils.h": "c",
 		"format": "cpp"
-	},
-	"python.formatting.provider": "yapf"
+	}
 }
