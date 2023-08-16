@@ -13,7 +13,8 @@
 		"include_dirs": [
 			"include",
 			"ext",
-			"../common/include"
+			"../common/include",
+			"/usr/local/include"
 		],
 		"source_dirs": [
 			"src",
@@ -26,6 +27,7 @@
 		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fanalyzer -fsanitize=address -fsanitize=leak",
 		"linker_args": "-fsanitize=address -fsanitize=leak",
 		"libraries_dirs": [
+			"/usr/local/lib"
 		],
 		"libraries_names": [
 			"dl",
@@ -39,6 +41,7 @@
 		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra",
 		"linker_args": "",
 		"libraries_dirs": [
+			"/usr/local/lib"
 		],
 		"libraries_names": [
 			"dl",
