@@ -46,5 +46,10 @@ int getAllUsers(miniVector *users);
 
 /**
  * Given a UUID get all of that user info and puts it in the given userFull struct
+ * 
+ * @param UUID the UUID of the user to get
+ * @param user where to put the information found
+ * 
+ * @return 0 if successfull, 1 otherwise
  */
-void getUser(const uint32_t UUID, userFull *user);
+int getUser(const uint32_t UUID, userFull *user);

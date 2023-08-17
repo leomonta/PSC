@@ -5,6 +5,7 @@
 			"type": "shell",
 			"label": "PSCClient build all modified files",
 			"command": "cpp_builder.py",
+			"args": ["-p", "debug"],
 			"options": {
 				"cwd": "${workspaceFolder}/client",
 			},
@@ -28,6 +29,7 @@
 			"type": "shell",
 			"label": "PSCServer build all modified files",
 			"command": "cpp_builder.py",
+			"args": ["-p", "debug"],
 			"options": {
 				"cwd": "${workspaceFolder}/server",
 			},
@@ -51,6 +53,7 @@
 			"type": "shell",
 			"label": "PSCClient build all files",
 			"command": "cpp_builder.py -a",
+			"args": ["-a", "-p", "debug"],
 			"options": {
 				"cwd": "${workspaceFolder}/client",
 			},
@@ -74,6 +77,7 @@
 			"type": "shell",
 			"label": "PSCServer build all files",
 			"command": "cpp_builder.py -a",
+			"args": ["-a", "-p", "debug"],
 			"options": {
 				"cwd": "${workspaceFolder}/server",
 			},
