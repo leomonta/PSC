@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tcpConn.hpp"
+#include "tcpConn.h"
 
 void acceptClient(Socket serverSocket, bool *threadStop);
 

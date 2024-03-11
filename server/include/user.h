@@ -1,7 +1,7 @@
 #pragma once
 
-#include "constants.hpp"
-#include "miniVector.hpp"
+#include "constants.h"
+#include "miniVector.h"
 
 #include <stdint.h>
 

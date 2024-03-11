@@ -1,7 +1,7 @@
-#include "logger.hpp"
+#include "logger.h"
 
-#include <pthread.h>
 #include <stdarg.h>
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <unistd.h>
 
@@ -14,7 +14,7 @@
 #define WHT   "\x1B[37m"
 #define RESET "\x1B[0m"
 
-char currLogLevel = LOG_ALL;
+static char currLogLevel = LOG_ALL;
 
 void setLogLevel(const char newLogLevel) {
 	currLogLevel = newLogLevel;
@@ -62,7 +62,7 @@ void log(const char logLevel, const char *mex, ...) {
 
 	for (int i = 0; i < 3; ++i) {
 
-		char num = static_cast<char>(Tnum % 10) + '0';
+		char num = (char)(Tnum % 10) + '0';
 		Tnum /= 10;
 		TColor[index] = num;
 		--index;

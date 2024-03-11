@@ -1,6 +1,6 @@
 #pragma once
 
-#include "header.hpp"
+#include "header.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -27,7 +27,7 @@ void printHeaderStruct(const PSCheader *head);
  * 
  * @return 0 if successfull, 1 otherwise
  */
-int unStringifyHex(const char *strloc, uint32_t *dest);
+int unStringifyHex(const unsigned char *strloc, uint32_t *dest);
 
 /**
  * given a 32bit int creates a string of its hex representation
@@ -38,7 +38,7 @@ int unStringifyHex(const char *strloc, uint32_t *dest);
  * @param strloc the string where to put the hex representation
  * @param lowercase if true uses lowercase letters, if false uses uppercase letters
  */
-void stringifyHex(const uint32_t val, char *strloc, const bool lowecase);
+void stringifyHex(const uint32_t val, unsigned char *strloc, const bool lowecase);
 
 /**
  * find a string null terminated string needle in the string haystack while making sure that not more than count characters are compared for haystack

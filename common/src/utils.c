@@ -1,11 +1,13 @@
-#include "utils.hpp"
+#include "utils.h"
 
-#include "constants.hpp"
+#include "constants.h"
 
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define BUFLEN 1024
 
 void printHeaderStr(const char *head) {
 
@@ -51,7 +53,7 @@ void printHeaderStruct(const PSCheader *head) {
 #endif
 }
 
-int unStringifyHex(const char *strloc, uint32_t *dest) {
+int unStringifyHex(const unsigned char *strloc, uint32_t *dest) {
 
 	*dest = 0;
 
@@ -76,11 +78,11 @@ int unStringifyHex(const char *strloc, uint32_t *dest) {
 
 	for (int i = 0; i < 8; ++i, strloc++) {
 
-		uint8_t quartet = *strloc;
+		uint8_t quartet = (uint8_t)*strloc;
 
 		if (quartet <= '9' && quartet >= '0') {
 			*dest += (quartet & 0b0000'1111) << ((8 - i - 1) * 4);
-		} else if ((quartet >= 'A' && quartet <= 'F') || (quartet >= 'a' && quartet <= 'f')) { 
+		} else if ((quartet >= 'A' && quartet <= 'F') || (quartet >= 'a' && quartet <= 'f')) {
 			*dest += (quartet & 0b0001'1111) << ((8 - i - 1) * 4);
 		} else {
 			return 1; // failure
@@ -90,7 +92,7 @@ int unStringifyHex(const char *strloc, uint32_t *dest) {
 	return 0;
 }
 
-void stringifyHex(const uint32_t val, char *strloc, const bool lowercase) {
+void stringifyHex(const uint32_t val, unsigned char *strloc, const bool lowercase) {
 
 	char a = 'A';
 	if (lowercase) {
@@ -131,7 +133,7 @@ const char *strnstr(const char *haystack, const char *needle, const size_t count
 
 			// no match, reset the search
 		} else {
-			i -= Itr;
+			i -= (size_t)Itr;
 			Itr = 0;
 		}
 	}
@@ -144,26 +146,24 @@ bool findInFile(const char *toSearch, FILE *file, size_t *line, size_t *col) {
 
 	*line = 0;
 
-	size_t len    = 0;
-	// the linestr is automatically allocated by getline, but we need to free it at the end
-	char *linestr = nullptr;
+	char linestr[BUFLEN];
 
 	bool res = false;
 
 	// search file line by lide
 	while (true) {
-		auto read = getline(&linestr, &len, file);
+		auto read = fgets(linestr, BUFLEN, file);
 
 		// reached eof
-		if (read == -1) {
+		if (read == nullptr) {
 			res = false;
 			break;
 		}
 
-		auto foundPos = strnstr(linestr, toSearch, read);
+		auto foundPos = strnstr(linestr, toSearch, strlen(linestr));
 		if (foundPos != nullptr) {
 			// save the column
-			*col = foundPos - linestr;
+			*col = (size_t)(foundPos - linestr);
 
 			// found!
 			res = true;
@@ -171,10 +171,6 @@ bool findInFile(const char *toSearch, FILE *file, size_t *line, size_t *col) {
 		}
 
 		++(*line);
-	}
-
-	if (linestr) {
-		free(linestr);
 	}
 
 	return res;

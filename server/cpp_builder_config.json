@@ -1,12 +1,10 @@
 {
-	"scripts" : {
-	},
+	"scripts": {},
 	"compiler": {
 		"compiler_style": "gcc",
-		"compiler_exe": "g++",
-		"linker_exe": "g++"
+		"compiler_exe": "gcc",
+		"linker_exe": "gcc"
 	},
-	
 	"directories": {
 		"project_dir": ".",
 		"exe_path_name": "bin/PSCS",
@@ -22,10 +20,7 @@
 		],
 		"temp_dir": "obj"
 	},
-
-	"debug": {
-		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fanalyzer -fsanitize=address -fsanitize=leak",
-		"linker_args": "-fsanitize=address -fsanitize=leak",
+	"default": {
 		"libraries_dirs": [
 			"/usr/local/lib"
 		],
@@ -34,19 +29,17 @@
 			"pthread",
 			"netTcpSslDebug"
 		]
-
 	},
-
+	"debug": {
+		"compiler_args": "-g3 -std=c2x -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fanalyzer -fsanitize=address -fsanitize=leak",
+		"linker_args": "-fsanitize=address -fsanitize=leak"
+	},
+	"no-asan": {
+		"compiler_args": "-g3 -std=c2x -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra",
+		"linker_args": ""
+	},
 	"release": {
-		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra",
-		"linker_args": "",
-		"libraries_dirs": [
-			"/usr/local/lib"
-		],
-		"libraries_names": [
-			"dl",
-			"pthread",
-			"netTcpSsl"
-		]
+		"compiler_args": "-Ofast -std=c2x",
+		"linker_args": "-flto"
 	}
 }

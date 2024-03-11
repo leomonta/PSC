@@ -1,8 +1,8 @@
-#include "user.hpp"
+#include "user.h"
 
-#include "constants.hpp"
-#include "logger.hpp"
-#include "utils.hpp"
+#include "constants.h"
+#include "logger.h"
+#include "utils.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -10,9 +10,11 @@
 #include <string.h>
 #include <time.h>
 
+#define BUFLEN 1024
+
 // since i check many times for io errors, i'm gonna use a single function to print the message, so i can replace it easily if needed
 void fileErrLog() {
-	log(LOG_ERROR, "A file error occurred while saving the user to disk\n");
+	log(LOG_ERROR, "A file error occurred while saving the user to disk, -> %s\n", strerror(errno));
 }
 
 int logNfree(char *buff) {
@@ -43,7 +45,7 @@ int saveUser(const userFull *user) {
 		auto lineLen = 8 + 1 + namelen;
 		char lineToWrite[lineLen]; // stack allocated
 
-		stringifyHex(user->UUID, lineToWrite, true);
+		stringifyHex(user->UUID, (unsigned char*)lineToWrite, true);
 
 		lineToWrite[8] = SEPARATOR;
 
@@ -53,16 +55,25 @@ int saveUser(const userFull *user) {
 
 		fd = fopen("./users.dat", "w");
 
+		if (fd == NULL) {
+			fileErrLog();
+			return 1;
+		}
+
 		if (fseek(fd, 0, SEEK_END)) {
+			fclose(fd);
 			fileErrLog();
 			return 1;
 		}
 
 		if (fwrite("\n", 1, 1, fd) < 1) {
+			fclose(fd);
 			fileErrLog();
 			return 1;
 		}
+
 		if (fwrite(lineToWrite, 1, lineLen, fd) < lineLen) {
+			fclose(fd);
 			fileErrLog();
 			return 1;
 		}
@@ -93,7 +104,7 @@ int saveUser(const userFull *user) {
 		auto lineLen = 8 + 1 + namelen;
 		char lineToWrite[lineLen]; // stack allocated
 
-		stringifyHex(elem->UUID, lineToWrite, true);
+		stringifyHex(elem->UUID, (unsigned char*) lineToWrite, true);
 
 		// temporarily use the null terminator here for searching this in the file
 		lineToWrite[8] = '\0';
@@ -265,7 +276,7 @@ int toUserFull(const char *str, userFull *dest) {
 
 	// extract the UUID
 	// I don't need to modify the string in any way since unstringify check only the first 8 positions
-	if (unStringifyHex(str, &dest->UUID)) {
+	if (unStringifyHex((unsigned char *) str, &dest->UUID)) {
 		// this means that the first 8 bytes are not a hex representation
 		return 1;
 	}
@@ -284,7 +295,7 @@ int getAllUsers(miniVector *users) {
 	auto file = fopen("./users.dat", "r");
 
 	// file does not exist, err 1
-	if (errno == ENOENT) {
+	if (file == NULL) {
 		return 1;
 	}
 	// opening failed for other reasons, err 2
@@ -294,35 +305,30 @@ int getAllUsers(miniVector *users) {
 		return 2;
 	}
 
-	// the linestr is automatically allocated by getline, but we need to free it at the end
-	char  *linestr = nullptr;
-	size_t len     = 0;
-
 	userFull curr;
 
-	ssize_t read = 0;
+	// read BUFLEN chars at the time
+	char buffer[BUFLEN];
+
+	char* read = nullptr;
 	// search file line by line
 	while (true) {
-		read = getline(&linestr, &len, file);
+		read = fgets(buffer, BUFLEN, file);
 
-		if (read == -1) {
+		if (read == nullptr) {
 			// this means ferror or feof
 
 			if (ferror(file)) {
-				log(LOG_ERROR, "Could not retrive all of the users from the file\n");
+				log(LOG_ERROR, "Could not retrive all of the users from the file, -> %s\n", strerror(errno));
 			}
 			// break in any case
 			break;
 		}
 
 		// tuUserFull should not SIGSEGV or such, so i can just pass watherver getline gives me
-		if (!toUserFull(linestr, &curr)) {
+		if (!toUserFull(buffer, &curr)) {
 			append(users, &curr);
 		}
-	}
-
-	if (linestr) {
-		free(linestr);
 	}
 
 	fclose(file);
@@ -332,11 +338,11 @@ int getAllUsers(miniVector *users) {
 int genUUID(uint32_t *num) {
 	// not really need a secure random
 	srand((unsigned int)(time(0)));
-	uint32_t candidate = rand();
+	uint32_t candidate = (uint32_t) rand();
 
 	// TODO
 	// Yes this allocates 5 * sizeof(userFull) -> 5 * (256 + 4) -> 1300 bytes
-	// maybe in the future i will use somthing smaller
+	// maybe in the future i will use something smaller
 	miniVector allUsrs = makeMiniVector(sizeof(userFull), 5);
 
 	// file does not exist, cannot collide with other UUIDs
@@ -354,7 +360,7 @@ int genUUID(uint32_t *num) {
 
 		// Another user has this UUID
 		if (candidate == elem->UUID) {
-			candidate = rand();
+			candidate = (uint8_t) rand();
 
 			// restart
 			i = 0;

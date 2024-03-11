@@ -20,12 +20,12 @@
 #define VARIANT_BIN  0b1
 
 // i guess constexpr char const works
-constexpr char const *METHODS_STR[3] = {
+static char const *const METHODS_STR[3] = {
     "METHOD_GET",
     "METHOD_POST",
     "METHOD_PATCH"};
 
-constexpr char const *VARIANTS_STR[2] = {
+static char const *const VARIANTS_STR[2] = {
     "VARIANT_TEXT",
     "VARIANT_BIN"};
 

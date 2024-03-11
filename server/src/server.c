@@ -1,14 +1,13 @@
-#include "server.hpp"
+#include "server.h"
 
-#include "constants.hpp"
-#include "header.hpp"
-#include "logger.hpp"
-#include "sslConn.hpp"
-#include "tcpConn.hpp"
-#include "user.hpp"
-#include "utils.hpp"
+#include "constants.h"
+#include "header.h"
+#include "logger.h"
+#include "tcpConn.h"
+#include "user.h"
+#include "utils.h"
 
-#include <thread>
+#include <string.h>
 
 int main() {
 
@@ -23,7 +22,7 @@ int main() {
 	saveUser(&tmp);
 	return 0;
 
-	auto ssck = tcpConn::initializeServer(DEFAULT_PORT, 4);
+	auto ssck = TCPinitializeServer(DEFAULT_PORT, 4);
 
 	auto stopAllThreads = false;
 
@@ -34,13 +33,14 @@ void acceptClient(Socket serverSocket, bool *threadStop) {
 
 	while (!*threadStop) {
 
-		auto client = tcpConn::acceptClientSock(serverSocket);
+		auto client = TCPacceptClientSock(serverSocket);
 
 		if (client == -1) {
 			continue;
 		}
 
-		std::thread(resolveClient, client, threadStop).detach();
+		//std::thread(resolveClient, client, threadStop).detach();
+		resolveClient(client, threadStop);
 		log(LOG_INFO, "Launched thread for resolving the client %d request.\n", client);
 	}
 }
@@ -50,12 +50,12 @@ void resolveClient(Socket clientSocket, bool *threadStop) {
 	while (!*threadStop) {
 		char *msg;
 
-		auto bytes = tcpConn::receiveSegmentC(clientSocket, msg);
+		auto bytes = TCPreceiveSegment(clientSocket, &msg);
 
 		if (bytes > 0) {
 			PSCheader header;
 			printHeaderStr(msg);
-			disassembleHeader((uint8_t *)(msg), header);
+			disassembleHeader((uint8_t *)(msg), &header);
 			printHeaderStruct(&header);
 		}
 		if (bytes <= 0) {

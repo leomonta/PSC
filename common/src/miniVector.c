@@ -1,4 +1,4 @@
-#include "miniVector.hpp"
+#include "miniVector.h"
 
 #include <stdlib.h>
 #include <string.h>
