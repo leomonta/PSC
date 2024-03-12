@@ -13,10 +13,10 @@ int main() {
 
 	userFull tmp;
 
-	
 	genUUID(&tmp.UUID);
+	memset(tmp.uname, 0, MAX_UNAME_LEN);
 
-	auto uname = "somethig fiungisubg";
+	auto uname = "Try changing something\0";
 	memcpy(tmp.uname, uname, strlen(uname));
 
 	saveUser(&tmp);

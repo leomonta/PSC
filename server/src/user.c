@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include "logger.h"
+#include "miniVector.h"
 #include "utils.h"
 
 #include <errno.h>
@@ -23,62 +24,75 @@ int logNfree(char *buff) {
 	return 1;
 }
 
+int writeUserToFile(const userFull *user, const long offset, const int whence) {
+	// make the string to write in the file
+
+	// space for the hex repr of the UUID (8b) the '|' (1b) separator and the entire name (namelen)
+	size_t lineLen = 8 + 1 + MAX_UNAME_LEN; // + 1 + KEY_LENGTH;
+	char lineToWrite[lineLen];            // stack allocated
+
+	stringifyHex(user->UUID, (unsigned char *)lineToWrite, true);
+
+	lineToWrite[8] = SEPARATOR;
+
+	// put the uname in the line to write on the file
+	strncpy(&lineToWrite[9], user->uname, MAX_UNAME_LEN);
+
+	FILE *fd = fopen("./users.dat", "w");
+
+	// file does not exists
+	if (fd == NULL) {
+		fileErrLog();
+		return 1;
+	}
+
+	// go to the end
+	if (fseek(fd, offset, whence)) {
+		fclose(fd);
+		fileErrLog();
+		return 1;
+	}
+
+	// make a new line
+	if (fwrite("\n", 1, 1, fd) < 1) {
+		fclose(fd);
+		fileErrLog();
+		return 1;
+	}
+
+	// write the line
+	if (fwrite(lineToWrite, 1, lineLen, fd) < lineLen) {
+		fclose(fd);
+		fileErrLog();
+		return 1;
+	}
+
+	fclose(fd);
+
+	return 0;
+}
+
 int saveUser(const userFull *user) {
 
 	auto allUsrs = makeMiniVector(sizeof(userFull), 5);
 
 	auto err = getAllUsers(&allUsrs);
 
-	FILE *fd;
-
 	if (err == 2) {
 		// io err, just propagate it up
+		destroyMiniVector(&allUsrs);
 		return 1;
 	} else if (err == 1) {
 
-		// make the string to write in the file
+		// no old file, make a new one and write to it
 
-		auto namelen = strlen(user->uname);
-		namelen      = namelen > MAX_UNAME_LEN ? MAX_UNAME_LEN : namelen;
+		auto res = writeUserToFile(user, 0, SEEK_END);
 
-		// space for the hex repr of the UUID (8b) the '|' (1b) separator and the entire name (namelen)
-		auto lineLen = 8 + 1 + namelen;
-		char lineToWrite[lineLen]; // stack allocated
-
-		stringifyHex(user->UUID, (unsigned char*)lineToWrite, true);
-
-		lineToWrite[8] = SEPARATOR;
-
-		// put the uname in the line to write on the file
-		strncpy(&lineToWrite[9], user->uname, namelen);
-		// file does not exists
-
-		fd = fopen("./users.dat", "w");
-
-		if (fd == NULL) {
-			fileErrLog();
-			return 1;
+		if (res != 0) {
+			destroyMiniVector(&allUsrs);
+			return res;
 		}
 
-		if (fseek(fd, 0, SEEK_END)) {
-			fclose(fd);
-			fileErrLog();
-			return 1;
-		}
-
-		if (fwrite("\n", 1, 1, fd) < 1) {
-			fclose(fd);
-			fileErrLog();
-			return 1;
-		}
-
-		if (fwrite(lineToWrite, 1, lineLen, fd) < lineLen) {
-			fclose(fd);
-			fileErrLog();
-			return 1;
-		}
-
-		fclose(fd);
 	}
 
 	// need to add or modify the given user
@@ -92,173 +106,46 @@ int saveUser(const userFull *user) {
 	for (size_t i = 0; i < allUsrs.count; ++i) {
 		auto elem = (const userFull *)(getElement(&allUsrs, i));
 
-		// write the new user instead of the old one
-		if (elem->UUID == user->UUID) {
-			elem = user;
+		// wrong user? check next
+		if (elem->UUID != user->UUID) {
+			continue;
 		}
 
-		auto namelen = strlen(elem->uname);
-		namelen      = namelen > MAX_UNAME_LEN ? MAX_UNAME_LEN : namelen;
+		// FIXME: reading the file twice
+		auto fd = fopen("./users.dat", "r");
+		
+		if (fd == NULL) {
+			destroyMiniVector(&allUsrs);
+			return 1;
+		}
 
-		// space for the hex repr of the UUID (8b) the '|' (1b) separator and the entire name (namelen)
-		auto lineLen = 8 + 1 + namelen;
-		char lineToWrite[lineLen]; // stack allocated
+		char buffer[BUFLEN];
 
-		stringifyHex(elem->UUID, (unsigned char*) lineToWrite, true);
+		char *read = nullptr;
 
-		// temporarily use the null terminator here for searching this in the file
-		lineToWrite[8] = '\0';
+		// search file line by line
+		while (true) {
+			read = fgets(buffer, BUFLEN, fd);
 
-		// put the uname in the line to write on the file
-		strncpy(&lineToWrite[9], elem->uname, namelen);
+			if (read == nullptr) {
+				// break in any case
+				break;
+			}
+
+			uint32_t hex;
+			unStringifyHex((uint8_t *) buffer, &hex);
+			if (hex == user->UUID) {
+				writeUserToFile(user, ftell(fd), SEEK_SET);
+			}
+		}
+
+		fclose(fd);
 	}
 
+	writeUserToFile(user, 0, SEEK_END);
+
+	destroyMiniVector(&allUsrs);
 	return 0;
-
-	/*
-	// I use errno to check for errors
-	errno     = NO_ERR;
-	auto file = fopen("./users.dat", "r+b");
-
-	// file does not exist, create it
-	if (errno == ENOENT) { // no such file or directory
-	    errno = NO_ERR;
-	    log(LOG_DEBUG, "users file not found, creating a new one\n");
-	    file = fopen("./users.dat", "wb");
-	}
-
-	// opening failed for other reasons
-	if (errno != NO_ERR) {
-	    log(LOG_ERROR, "File opening failed -> %s\n", strerror(errno));
-	    fclose(file);
-	    return 1;
-	}
-
-	// now we have an open file rw in binary positioned at the start
-
-	auto namelen = strlen(user->uname);
-
-	// space for the hex repr of the UUID (8) the '|' (1) separator and the entire name (namelen)
-	auto lineLen = 8 + 1 + namelen;
-	char UUID_name[lineLen]; // stack allocated
-
-	stringifyHex(user->UUID, UUID_name, true);
-
-	// temporarily use the null terminator here for searching this in the file
-	UUID_name[8] = '\0';
-
-	// complete the string with the username
-	strncpy(&UUID_name[9], user->uname, namelen);
-
-	size_t lineNum = 0;
-	size_t colNum  = 0;
-
-	// FIXME: by calling findInFile and then reading thee file again in a buff i'm reading the entire file twice
-	if (findInFile(UUID_name, file, &lineNum, &colNum)) {
-
-	    // get the file len
-	    if (fseek(file, 0, SEEK_END)) {
-	        fileErrLog();
-	        return 1;
-	    }
-	    auto fileLen = ftell(file);
-
-	    // return at start
-	    if (fseek(file, 0, SEEK_SET)) {
-	        fileErrLog();
-	        return 1;
-	    }
-
-	    // entire file + the entire line
-	    auto  bufLen = fileLen + 1;
-	    char *buff   = (char *)(malloc(bufLen));
-
-	    if (buff == nullptr) {
-	        log(LOG_ERROR, "Could not allocate %d bytes of memory\n", bufLen);
-	        free(buff);
-	        return 1;
-	    }
-
-	    // read the file into the buffer
-	    fread(buff, 1, fileLen, file);
-	    if (!ferror(file)) {
-	        return logNfree(buff);
-	    }
-	    // needed to prevent strchr from going rogue
-	    buff[bufLen - 1] = '\0';
-
-	    if (fseek(file, 0, SEEK_SET)) {
-	        return logNfree(buff);
-	    }
-
-	    // I write line per line the old content of the file,
-	    // when i get to the line i have to replace i write the new line and skip the old
-
-	    size_t nl  = 0;
-	    char  *pos = buff;
-
-	    // lines pre modification
-	    while (nl < lineNum) {
-	        auto   pos_n = strchr(pos, '\n') + 1; // strchr points to the \n, skip it
-	        size_t sz    = pos_n - pos;
-	        if (fwrite(pos, 1, sz, file) < sz) {
-	            return logNfree(buff);
-	        }
-	        pos = pos_n;
-	        ++nl;
-	    }
-
-	    // modified line
-	    UUID_name[8] = SEPARATOR;
-	    if (fwrite(UUID_name, 1, lineLen, file) < lineLen) {
-	        return logNfree(buff);
-	    }
-	    if (fwrite("\n", 1, 1, file) < 1) {
-	        return logNfree(buff);
-	    };
-
-	    // skip the old replace line
-	    pos = strchr(pos, '\n') + 1;
-
-	    // lines post modification
-	    while (true) {
-	        auto pos_n = strchr(pos, '\n') + 1; // strchr points to the \n, skip it
-	        if (pos_n == (char *)(1)) {         // nullptr + 1
-	            break;
-	        }
-	        size_t sz = pos_n - pos;
-	        if (fwrite(pos, 1, sz, file) < sz) {
-	            return logNfree(buff);
-	        }
-	        pos = pos_n;
-	    }
-
-	    size_t sz = buff + fileLen - pos;
-	    if (fwrite(pos, 1, sz, file) < sz) {
-	        return logNfree(buff);
-	    }
-
-	    free(buff);
-
-	} else {
-	    if (fseek(file, 0, SEEK_END)) {
-	        fileErrLog();
-	        return 1;
-	    }
-	    UUID_name[8] = SEPARATOR;
-
-	    if (fwrite("\n", 1, 1, file) < 1) {
-	        fileErrLog();
-	        return 1;
-	    }
-	    if (fwrite(UUID_name, 1, lineLen, file) < lineLen) {
-	        fileErrLog();
-	        return 1;
-	    }
-	}
-
-	fclose(file);
-	return 0;*/
 }
 
 /*
@@ -275,8 +162,8 @@ int toUserFull(const char *str, userFull *dest) {
 	}
 
 	// extract the UUID
-	// I don't need to modify the string in any way since unstringify check only the first 8 positions
-	if (unStringifyHex((unsigned char *) str, &dest->UUID)) {
+	// I don't need to modify the string in any way since unstringify check only the first 8 bytes
+	if (unStringifyHex((const unsigned char *)str, &dest->UUID)) {
 		// this means that the first 8 bytes are not a hex representation
 		return 1;
 	}
@@ -296,6 +183,7 @@ int getAllUsers(miniVector *users) {
 
 	// file does not exist, err 1
 	if (file == NULL) {
+		log(LOG_ERROR, "File opening failed -> %s\n", strerror(errno));
 		return 1;
 	}
 	// opening failed for other reasons, err 2
@@ -310,7 +198,7 @@ int getAllUsers(miniVector *users) {
 	// read BUFLEN chars at the time
 	char buffer[BUFLEN];
 
-	char* read = nullptr;
+	char *read = nullptr;
 	// search file line by line
 	while (true) {
 		read = fgets(buffer, BUFLEN, file);
@@ -325,7 +213,7 @@ int getAllUsers(miniVector *users) {
 			break;
 		}
 
-		// tuUserFull should not SIGSEGV or such, so i can just pass watherver getline gives me
+		// tuUserFull should not SIGSEGV or such, so i can just pass watherver fgets gives me
 		if (!toUserFull(buffer, &curr)) {
 			append(users, &curr);
 		}
@@ -338,7 +226,7 @@ int getAllUsers(miniVector *users) {
 int genUUID(uint32_t *num) {
 	// not really need a secure random
 	srand((unsigned int)(time(0)));
-	uint32_t candidate = (uint32_t) rand();
+	uint32_t candidate = (uint32_t)rand();
 
 	// TODO
 	// Yes this allocates 5 * sizeof(userFull) -> 5 * (256 + 4) -> 1300 bytes
@@ -360,7 +248,7 @@ int genUUID(uint32_t *num) {
 
 		// Another user has this UUID
 		if (candidate == elem->UUID) {
-			candidate = (uint8_t) rand();
+			candidate = (uint8_t)rand();
 
 			// restart
 			i = 0;
