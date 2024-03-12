@@ -34,4 +34,9 @@ int main() {
 	msg[TOT_HEADER_LEN] = '\0';
 
 	TCPsendSegment(csck, (char *)(msg));
+
+	free(msg);
+
+	TCPterminate(csck);
+
 }

@@ -15,15 +15,17 @@
 
 // since i check many times for io errors, i'm gonna use a single function to print the message, so i can replace it easily if needed
 void fileErrLog() {
-	log(LOG_ERROR, "A file error occurred while saving the user to disk, -> %s\n", strerror(errno));
+	log(LOG_ERROR, "An error occurred while operating if the user file on disk, -> %s\n", strerror(errno));
 }
 
-int logNfree(char *buff) {
-	fileErrLog();
-	free(buff);
-	return 1;
-}
-
+/**
+ * Given a user, write it in the file "./users.dat" at the specified offset (from ftell) and whence (SEEK_SET, SEEK_CURR, SEEK_END)
+ *
+ * @param user the user to write to file
+ * @param offset the offset to write it into the file starting from whence
+ * @param the origin of the write operation
+ * @return 0 if successfull 1 otherwise
+ */
 int writeUserToFile(const userFull *user, const long offset, const int whence) {
 	// make the string to write in the file
 
@@ -119,6 +121,7 @@ int saveUser(const userFull *user) {
 		auto fd = fopen("./users.dat", "r");
 		
 		if (fd == NULL) {
+			fileErrLog();
 			destroyMiniVector(&allUsrs);
 			return 1;
 		}
@@ -189,12 +192,12 @@ int getAllUsers(miniVector *users) {
 
 	// file does not exist, err 1
 	if (file == NULL) {
-		log(LOG_ERROR, "File opening failed -> %s\n", strerror(errno));
+		fileErrLog();
 		return 1;
 	}
 	// opening failed for other reasons, err 2
 	if (errno != NO_ERR) {
-		log(LOG_ERROR, "File opening failed -> %s\n", strerror(errno));
+		fileErrLog();
 		fclose(file);
 		return 2;
 	}
@@ -213,7 +216,7 @@ int getAllUsers(miniVector *users) {
 			// this means ferror or feof
 
 			if (ferror(file)) {
-				log(LOG_ERROR, "Could not retrive all of the users from the file, -> %s\n", strerror(errno));
+				fileErrLog();
 			}
 			// break in any case
 			break;

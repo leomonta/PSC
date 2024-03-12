@@ -20,13 +20,13 @@ int main() {
 	memcpy(tmp.uname, uname, strlen(uname));
 
 	saveUser(&tmp);
-	return 0;
 
 	auto ssck = TCPinitializeServer(DEFAULT_PORT, 4);
 
 	auto stopAllThreads = false;
 
 	acceptClient(ssck, &stopAllThreads);
+	return 0;
 }
 
 void acceptClient(Socket serverSocket, bool *threadStop) {

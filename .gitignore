@@ -3,3 +3,4 @@
 temp*
 old*
 compile_commands.json
+*/.cache/

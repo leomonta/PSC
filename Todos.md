@@ -3,9 +3,6 @@
 	- [x] Sketching the protocol
 	- [x] trying to use the protocol for both client and server
 	- [ ] encryption
-	- [ ] Storage
-		- [ ] UUID:[public key]:uname in single file
-		- [ ]
 
 - [ ] Server
 	- [ ] Message log
@@ -14,7 +11,13 @@
 	- [ ] Answer the client on message received
 	- [ ] Send the client the data it requests
 	- [ ] Notify other clients of new messages
-	- [ ] Generate Unique Access Requests for new clients
+	- [ ] Storage
+		- [ ] UUID:uname:public key in single file
+			- [x] UUID
+			- [x] uname
+			- [ ] public key
+		- [ ] messages
+		- [ ] resources
 
 - [ ] Client
 	- [ ] Access a server
