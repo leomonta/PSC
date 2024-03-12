@@ -38,7 +38,7 @@ int writeUserToFile(const userFull *user, const long offset, const int whence) {
 	// put the uname in the line to write on the file
 	strncpy(&lineToWrite[9], user->uname, MAX_UNAME_LEN);
 
-	FILE *fd = fopen("./users.dat", "w");
+	FILE *fd = fopen("./users.dat", "a+");
 
 	// file does not exists
 	if (fd == NULL) {
@@ -99,6 +99,8 @@ int saveUser(const userFull *user) {
 
 	// find the user in all of the users in the file, if it's not there add it at the end, if found modify it
 
+	bool found = false;
+
 	// for every user,
 	//   Is it the one that needs to be modified, write the updated one
 	// else
@@ -110,6 +112,8 @@ int saveUser(const userFull *user) {
 		if (elem->UUID != user->UUID) {
 			continue;
 		}
+
+		found = true;
 
 		// FIXME: reading the file twice
 		auto fd = fopen("./users.dat", "r");
@@ -142,7 +146,9 @@ int saveUser(const userFull *user) {
 		fclose(fd);
 	}
 
-	writeUserToFile(user, 0, SEEK_END);
+	if (!found) {
+		writeUserToFile(user, 0, SEEK_END);
+	}
 
 	destroyMiniVector(&allUsrs);
 	return 0;
