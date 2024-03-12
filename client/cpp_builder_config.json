@@ -1,10 +1,8 @@
 {
-	"scripts" : {
-	},
 	"compiler": {
 		"compiler_style": "gcc",
-		"compiler_exe": "g++",
-		"linker_exe": "g++"
+		"compiler_exe": "gcc",
+		"linker_exe": "gcc"
 	},
 	
 	"directories": {
@@ -22,25 +20,25 @@
 		"temp_dir": "obj"
 	},
 
-	"debug": {
-		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fsanitize=address -fsanitize=leak",
-		"linker_args": "-fsanitize=address -fsanitize=leak",
-		"libraries_dirs": [
-		],
+	"default": {
 		"libraries_names": [
 			"dl",
 			"pthread",
 			"netTcpSslDebug"
 		]
+	},
+
+	"debug": {
+		"compiler_args": "-g3 -std=c2x -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fsanitize=address -fsanitize=leak",
+		"linker_args": "-fsanitize=address -fsanitize=leak"
 
 	},
 
+	"no-asan": {
+		"compiler_args": "-g3 -std=c2x -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra"
+	},
+
 	"release": {
-		"compiler_args": "-g3 -std=c++2a -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra",
-		"linker_args": "",
-		"libraries_dirs": [
-		],
-		"libraries_names": [
-		]
+		"compiler_args": "-Ofast -std=c2x"
 	}
 }

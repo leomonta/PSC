@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-typedef struct PSCheader {
+typedef struct {
 	uint8_t  versionMajor;
 	uint8_t  versionMinor;
 	uint8_t  method;
