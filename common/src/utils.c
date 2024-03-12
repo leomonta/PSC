@@ -2,7 +2,7 @@
 
 #include "constants.h"
 
-#include <errno.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -76,14 +76,16 @@ int unStringifyHex(const unsigned char *strloc, uint32_t *dest) {
 	                1001111 O                 1101111 o
 	*/
 
-	for (int i = 0; i < 8; ++i, strloc++) {
+	for (int i = 0; i < 8; ++i, ++strloc) {
 
-		uint8_t quartet = (uint8_t)*strloc;
+		// 1234abcd
+
+		uint8_t quartet = *strloc;
 
 		if (quartet <= '9' && quartet >= '0') {
-			*dest += (quartet & 0b0000'1111) << ((8 - i - 1) * 4);
+			*dest += (quartet & 0b1111) << ((7 - i) * 4);
 		} else if ((quartet >= 'A' && quartet <= 'F') || (quartet >= 'a' && quartet <= 'f')) {
-			*dest += (quartet & 0b0001'1111) << ((8 - i - 1) * 4);
+			*dest += ((quartet & 0b1111) + 9) << ((7 - i) * 4);
 		} else {
 			return 1; // failure
 		}
