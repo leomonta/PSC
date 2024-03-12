@@ -15,12 +15,14 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
         -   The servers check that no one in the server has the same UUID. obv
         -   32bits allow for 2^32 4 bln UUID, more than enough
     -   The server is UUID 00...00, unmistakable
+        -   Might give the server an actual UUID, but the actual identification also requires the key so it should be fine
 
 #### When did it happen?
 
 -   Time of the message being sent
-    -   GMT timestamp of the message the moment the button is pressed formatted following the RFC 1123
-        -   An example -> Sun, 06 Nov 1994 08:49:37, 25 bytes long, the GMT is implied
+    -   Unix timestamp
+        -   Formatted in chat as GMT timestamp formatted following the RFC 1123
+            -   An example -> Sun, 06 Nov 1994 08:49:37, 25 bytes long, the GMT is implied
     -   The server should echo back to the client the time at which it has received the message
 
 #### What do you want?
@@ -32,13 +34,13 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
         -   The specific resource ID is specified in the body
     -   Each with a variant
         -   Text only, lightweight.
-        -   Res only, if you also need the binary resource
+        -   Bin only, if you also need the binary resource
 
 #### The actual body
 
 -   The Body of the message
-
     -   The text plus some referencies to media and formatting
+    -   The binary data is referenced by the message should be sent with a dedicated message, preferrably before the actual message
 
 #### Version
 
@@ -49,7 +51,7 @@ A simple client-server encrypted chat built on top TCP for personal use and smal
 #### How much is being transferred
 
 -   Content lenght in Bytes excluding the header
-    -   Use remaining size in the header, 21 bits, 2097151, max 2MiB data
+    -   Use remaining size in the header, 21 bits, 2097151B, max 2MiB data
 
 ### Digital signature (WIP)
 
@@ -76,9 +78,9 @@ V         => 0 TEXT
 
 length    => Lenght of the body in size
 
-timestamp => 32bit unigned int unix timestamp
-
 UUID      => Unique User ID
+
+timestamp => 32bit unigned int unix timestamp
 
 Body      => text or binary data
 
@@ -94,9 +96,9 @@ All Values should be stored in big endian
 
 ### Header
 
-The general header is 64bytes long and contains the minimum data i can think of that is always needed
+The general header is 64bytes long and contains the minimum data I can think of that is always needed
 
-This header does not contain sensitive data, the UUID means who is talking for the server only, so it's not needed to compress encrypt it
+This header does not contain sensitive data, the UUID means who is talking for the server only, so it's not needed to encrypt it since the identification is based on keys and signatures
 
 ### Port
 
@@ -117,6 +119,7 @@ We need to store users, their messages and their resources it possible to just p
 ```
 bin
 ├── PSCS
+├── users.dat
 ├── msgs
 │   ├── 0-100
 │   ├── 101-200
@@ -129,17 +132,17 @@ bin
 
 ### Users
 
-Need UUID, username and publi key
+Need UUID, username and public key
 
-Even if there were 1000 users it wouldn't be a problem to just search the correct one
+Even if there were 1000 users it wouldn't be a problem to just search the correct one, it's not that much data, thus no need for a complex data structure
 
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
-00 |                                             UUID                                              |
-20 |                                             uname                                             |
-*64
-40 |                                             Key                                               |
-...|...............................................................................................|
+ 00 |                                             UUID                                              |
+ 20 |                                             uname                                             |
+ 64 more times
+420 |                                             Key                                               |
+ ...|...............................................................................................|
 
 UUID => The User Unique IDentificator of the user
 Body => 256 bytes for an UTF-8 user name to show to other users
@@ -158,9 +161,9 @@ Key  => The user public key, used to confirm its digital signature
 ...|...............................................................................................|
 
 UUID    => The author UUID
-MSGID   => The message ID, an unsigned 32bit integer profressing from 0
+MSGID   => The message ID, an unsigned 32bit integer progressing from 0
 Body    => The body of the message as a UTF-8 list
-Resname => A list of resources names, names are always 64bits stored on hex notation
+Resname => A list of resources names, names are always 64bits
 ```
 
 ### Resources
