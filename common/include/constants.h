@@ -43,3 +43,5 @@ static char const *const VARIANTS_STR[2] = {
 #define NO_ERR 0
 
 #define MAX_UNAME_LEN 256
+
+#define CONCURRENT_THREADS 4

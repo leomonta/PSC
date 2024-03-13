@@ -6,8 +6,7 @@
 
 - [ ] Server
 	- [ ] Message log
-	- [ ] Generate UUID on new client Access Request
-		- [x] Generate random UUID not already in use
+	- [x] Generate random UUID not already in use
 	- [ ] Answer the client on message received
 	- [ ] Send the client the data it requests
 	- [ ] Notify other clients of new messages

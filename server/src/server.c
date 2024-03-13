@@ -1,65 +1,23 @@
 #include "server.h"
 
 #include "constants.h"
-#include "header.h"
-#include "logger.h"
-#include "tcpConn.h"
-#include "user.h"
-#include "utils.h"
-
-#include <string.h>
+#include "methods.h"
+#include "threadpool.h"
 
 int main() {
 
-	userFull tmp;
+	Socket ssck = TCPinitializeServer(DEFAULT_PORT, 4);
 
-	genUUID(&tmp.UUID);
-	memset(tmp.uname, 0, MAX_UNAME_LEN);
+	tPool *threadPool = TPOOLcreate(CONCURRENT_THREADS);
 
-	auto uname = "Try changing something\0";
-	memcpy(tmp.uname, uname, strlen(uname));
+	pthread_t clientAcceptor;
 
-	saveUser(&tmp);
+	runtimeInfo rti = {
+		ssck,
+		threadPool
+	};
 
-	auto ssck = TCPinitializeServer(DEFAULT_PORT, 4);
-
-	auto stopAllThreads = false;
-
-	acceptClient(ssck, &stopAllThreads);
+	//pthread_create(&clientAcceptor, NULL, proxy_accClient, ssck);
+	acceptClient(&rti);
 	return 0;
-}
-
-void acceptClient(Socket serverSocket, bool *threadStop) {
-
-	while (!*threadStop) {
-
-		auto client = TCPacceptClientSock(serverSocket);
-
-		if (client == -1) {
-			continue;
-		}
-
-		//std::thread(resolveClient, client, threadStop).detach();
-		resolveClient(client, threadStop);
-		log(LOG_INFO, "Launched thread for resolving the client %d request.\n", client);
-	}
-}
-
-void resolveClient(Socket clientSocket, bool *threadStop) {
-
-	while (!*threadStop) {
-		char *msg;
-
-		auto bytes = TCPreceiveSegment(clientSocket, &msg);
-
-		if (bytes > 0) {
-			PSCheader header;
-			printHeaderStr(msg);
-			disassembleHeader((uint8_t *)(msg), &header);
-			printHeaderStruct(&header);
-		}
-		if (bytes <= 0) {
-			return;
-		}
-	}
 }
