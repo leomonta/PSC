@@ -1,0 +1,18 @@
+#!/usr/bin/bash
+
+if [[ $# -lt 1 ]]; then
+	echo "Needed 2 arguments, file to process and type to use for it"
+	exit 1
+fi
+
+
+filename=$1
+typename=$2
+include=$3
+
+basenm="${filename%.*}"
+ext="${filename##*.}"
+
+# god help me
+# i delete random lines to account for cpp junk included from implied and templateutils includes
+sed "s/\#include/include/" $filename | cpp -C -include "templateutils.h" -DTYPE=$typename -DINCL="$include" | sed "1,62d" | sed "s/include/\#include/" > ../common/$basenm"_"$typename.$ext

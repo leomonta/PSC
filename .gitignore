@@ -1,6 +1,6 @@
 */bin/*
 */obj/*
-temp*
+temp.*
 old*
 compile_commands.json
 */.cache/
