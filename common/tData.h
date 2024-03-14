@@ -1,15 +1,29 @@
-#pragma once
-
 #include <stddef.h>
 
-typedef struct miniVector {
 
-	void  *data;        // data ptr
-	size_t capacity;    // total allocated byte
-	size_t elementSize; // size of an element
-	size_t count;       // how many elements are stored at the moment
 
-} miniVector;
+
+
+
+
+// double macro expension yay!
+
+
+
+
+
+
+
+#include tData
+
+
+typedef struct {
+
+ tData *data; // data ptr
+ size_t capacity; // total allocated byte
+ size_t count; // how many elements are stored at the moment
+
+} miniVector_tData;
 
 /**
  * Make a mini vector with a preallocated array of elementSize * initalCount lenght
@@ -19,7 +33,7 @@ typedef struct miniVector {
  *
  * @return a built miniVector
  */
-miniVector makeMiniVector(const size_t elementSize, const size_t initialCount);
+miniVector_tData makeMiniVector_tData(const size_t initialCount);
 
 /**
  * append an element of the previously specified size at the end of the vector
@@ -27,21 +41,21 @@ miniVector makeMiniVector(const size_t elementSize, const size_t initialCount);
  * @param vec the miniVecor where to append the data
  * @param element a pointer to the data to be appended
  */
-void append(miniVector *vec, void *element);
+void append_tData(miniVector_tData *vec, tData element);
 
 /**
  * Doubles the capacity of the given vector
  *
  * @param vec the vector to grow
  */
-void grow(miniVector *vec);
+void grow_tData(miniVector_tData *vec);
 
 /**
  * Frees all the resource allocated by vec
  *
  * @param vec the vector the destroy
  */
-void destroyMiniVector(miniVector *vec);
+void destroyMiniVector_tData(miniVector_tData *vec);
 
 /**
  * Return the element at the specified position
@@ -49,6 +63,6 @@ void destroyMiniVector(miniVector *vec);
  * @param vec the vector to get the element from
  * @param index the position the element should be
  * 
- * @return the pointer to the element at pos index
+ * @return the the element at pos index
  */
-void *getElement(const miniVector *vec, const size_t index);
+tData getElement_tData(const miniVector_tData *vec, const size_t index);
