@@ -1,5 +1,6 @@
 #pragma once
 
+#include "header.h"
 #include "tcpConn.h"
 #include "threadpool.h"
 
@@ -15,3 +16,7 @@ void acceptClient(const runtimeInfo *rti);
 void* proxy_resReq(void* data);
 
 void resolveRequest(const threadData clientSocket);
+
+/**
+ * store the message body and some metadata in the 
+int storeMessage(const PSCheader* msg);

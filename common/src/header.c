@@ -3,7 +3,6 @@
 #include "constants.h"
 
 #include <arpa/inet.h>
-#include <stdio.h>
 #include <string.h>
 
 void disassembleHeader(const uint8_t *msg, PSCheader *head) {

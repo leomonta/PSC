@@ -10,7 +10,7 @@ int main() {
 
 	tPool *threadPool = TPOOLcreate(CONCURRENT_THREADS);
 
-	pthread_t clientAcceptor;
+	//pthread_t clientAcceptor;
 
 	runtimeInfo rti = {
 		ssck,

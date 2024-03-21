@@ -1,0 +1,6 @@
+- [ ] Testing message sending and storing for server and client
+	- [x] Client
+		- [x] Client can send a message
+	- [ ] Server
+		- [ ] Server can receive, and print, a message
+		- [ ] Server can store the message
