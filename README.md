@@ -76,7 +76,7 @@ M M       => 00 GET
 V         => 0 TEXT
              1 BIN
 
-length    => Lenght of the body in size
+length    => Lenght of the body in bytes
 
 UUID      => Unique User ID
 
@@ -132,20 +132,40 @@ bin
 
 ### Users
 
-Need UUID, username and public key
+All of the users are stored in a single ,maybe compressed, file (users.dat)
 
-Even if there were 1000 users it wouldn't be a problem to just search the correct one, it's not that much data, thus no need for a complex data structure
+At the top of the file there is one byte for the version, the same as the protocol
+
+and three bytes that store the amount of users in the file, just to fill the 32bit size
 
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
- 00 |                                             UUID                                              |
- 20 |                                             uname                                             |
+ 00 |    VM    |    Vm     |                               num                                     |
+
+VM  => Version Major
+
+VM  => Version minor
+
+num => number of stored users
+```
+
+
+Even if there were 1000 users it wouldn't be a problem to just search the correct one, it's not that much data, thus no need for a complex data structure
+
+For each user i need the UUID, the username, and the public key
+
+```
+    00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
+ 00 |                                             UUID                                             |
+ 20 |                                             uname                                            |
  64 more times
-420 |                                             Key                                               |
- ...|...............................................................................................|
+420 |                                             Key                                              |
+ ...|..............................................................................................|
 
 UUID => The User Unique IDentificator of the user
+
 Body => 256 bytes for an UTF-8 user name to show to other users
+
 Key  => The user public key, used to confirm its digital signature
 ```
 
@@ -153,20 +173,33 @@ Key  => The user public key, used to confirm its digital signature
 
 ```
     00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F
-00 |                                             UUID                                              |
-20 |                                             MSGID                                             |
-40 |                                        Send Timestamp                                         |
-60 |                                        Recv Timestamp                                         |
-80 |                                             Size                                              |
+00 |     VM    |     Vm    |                                  Size                                 |
+20 |                                             UUID                                              |
+40 |                                             MSGID                                             |
+60 |                                        Send Timestamp                                         |
+80 |                                        Recv Timestamp                                         |
 A0 |                                             Body                                              |
 ...|...............................................................................................|
 ...|                                             Resname                                           |
 ...|...............................................................................................|
 
-UUID    => The author UUID
-MSGID   => The message ID, an unsigned 32bit integer progressing from 0
-Body    => The body of the message as a UTF-8 list
-Resname => A list of resources names, names are always 64bits
+VM             => Version Major 
+
+Vm             => Version minor
+
+Size           => the size of the body in size
+
+UUID           => The author UUID
+
+MSGID          => The message ID, an unsigned 32bit integer progressing from 0
+
+Send Timestamp => the timestamp when the user sent the message
+
+Recv Timestamp => the timestamp when the server received the message
+
+Body           => The body of the message as a char UTF-8 list
+
+Resname        => A list of resources names, names are always 64bits
 ```
 
 ### Resources

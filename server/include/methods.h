@@ -18,5 +18,6 @@ void* proxy_resReq(void* data);
 void resolveRequest(const threadData clientSocket);
 
 /**
- * store the message body and some metadata in the 
+ * store the message body and some metadata in the msgs folder
+ */
 int storeMessage(const PSCheader* msg);
