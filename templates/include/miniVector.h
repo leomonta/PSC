@@ -5,7 +5,7 @@
 INCL
 
 #define miniVector r(miniVector)
-#define make r(makeMiniVector)
+#define makeMiniVector r(makeMiniVector)
 #define append r(append)
 #define grow r(grow)
 #define destroy r(destroy)
@@ -27,7 +27,7 @@ typedef struct {
  *
  * @return a built miniVector
  */
-miniVector makeMV(const size_t initialCount);
+miniVector makeMiniVector(const size_t initialCount);
 
 /**
  * append an element of the previously specified size at the end of the vector

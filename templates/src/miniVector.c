@@ -1,7 +1,7 @@
 INCL
 
 #define miniVector r(miniVector)
-#define make r(makeMiniVector)
+#define makeMiniVector r(makeMiniVector)
 #define append r(append)
 #define grow r(grow)
 #define destroy r(destroy)

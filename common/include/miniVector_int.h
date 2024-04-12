@@ -19,7 +19,7 @@ typedef struct {
  *
  * @return a built miniVector
  */
-miniVector_int makeMV(const size_t initialCount);
+miniVector_int makeMiniVector_int(const size_t initialCount);
 
 /**
  * append an element of the previously specified size at the end of the vector

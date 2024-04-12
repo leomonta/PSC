@@ -2,7 +2,6 @@
 
 #include "constants.h"
 #include "logger.h"
-#include "miniVector.h"
 #include "utils.h"
 
 #include <errno.h>
@@ -76,7 +75,7 @@ int writeUserToFile(const userFull *user, const long offset, const int whence) {
 
 int saveUser(const userFull *user) {
 
-	auto allUsrs = makeMiniVector(sizeof(userFull), 5);
+	auto allUsrs = makeMiniVector_int(sizeof(userFull), 5);
 
 	auto err = getAllUsers(&allUsrs);
 

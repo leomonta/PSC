@@ -1,7 +1,7 @@
 #pragma once
 
 #include "constants.h"
-#include "miniVector.h"
+#include "miniVector_int.h"
 
 #include <stdint.h>
 
@@ -42,7 +42,7 @@ int genUUID(uint32_t *num);
  *
  * @return 0 if successful, 1 if file is not found, 2 if io error
  */
-int getAllUsers(miniVector *users);
+int getAllUsers(miniVector_int *users);
 
 /**
  * Given a UUID get all of that user info and puts it in the given userFull struct
