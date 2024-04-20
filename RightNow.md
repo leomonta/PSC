@@ -2,5 +2,5 @@
 	- [x] Client
 		- [x] Client can send a message
 	- [ ] Server
-		- [ ] Server can receive, and print, a message
+		- [x] Server can receive, and print, a message
 		- [ ] Server can store the message

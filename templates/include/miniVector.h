@@ -4,12 +4,12 @@
 
 INCL
 
-#define miniVector r(miniVector)
-#define makeMiniVector r(makeMiniVector)
-#define append r(append)
-#define grow r(grow)
-#define destroy r(destroy)
-#define getElement r(getElement)
+#define miniVector        r(miniVector)
+#define makeMiniVector    r(makeMiniVector)
+#define append            r(append)
+#define grow              r(grow)
+#define destroyMiniVector r(destroy)
+#define getElement        r(getElement)
 
 typedef struct {
 
@@ -35,7 +35,7 @@ miniVector makeMiniVector(const size_t initialCount);
  * @param vec the miniVecor where to append the data
  * @param element a pointer to the data to be appended
  */
-void append(miniVector *vec, TYPE element);
+void append(miniVector *vec, TYPE *element);
 
 /**
  * Doubles the capacity of the given vector
@@ -59,4 +59,4 @@ void destroyMiniVector(miniVector *vec);
  * 
  * @return the the element at pos index
  */
-TYPE getElement(const miniVector *vec, const size_t index);
+TYPE* getElement(const miniVector *vec, const size_t index);

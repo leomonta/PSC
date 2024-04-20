@@ -28,7 +28,7 @@ void grow_int(miniVector_int *vec) {
  vec->data = realloc(vec->data, sizeof(int) * vec->capacity);
 }
 
-void destroyMiniVector(miniVector_int *vec) {
+void destroyMiniVector_int(miniVector_int *vec) {
  // such logic
  free(vec->data);
 }

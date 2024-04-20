@@ -30,7 +30,7 @@ int writeUserToFile(const userFull *user, const long offset, const int whence) {
 
 	// space for the hex repr of the UUID (8b) the '|' (1b) separator and the entire name (namelen)
 	size_t lineLen = 8 + 1 + MAX_UNAME_LEN; // + 1 + KEY_LENGTH;
-	char lineToWrite[lineLen];            // stack allocated
+	char   lineToWrite[lineLen];            // stack allocated
 
 	stringifyHex(user->UUID, (unsigned char *)lineToWrite, true);
 
@@ -75,25 +75,24 @@ int writeUserToFile(const userFull *user, const long offset, const int whence) {
 
 int saveUser(const userFull *user) {
 
-	auto allUsrs = makeMiniVector_int(sizeof(userFull), 5);
+	miniVector_userFull allUsrs = makeMiniVector_userFull(sizeof(userFull));
 
-	auto err = getAllUsers(&allUsrs);
+	int err = getAllUsers(&allUsrs);
 
 	if (err == 2) {
 		// io err, just propagate it up
-		destroyMiniVector(&allUsrs);
+		destroyMiniVector_userFull(&allUsrs);
 		return 1;
 	} else if (err == 1) {
 
 		// no old file, make a new one and write to it
 
-		auto res = writeUserToFile(user, 0, SEEK_END);
+		int res = writeUserToFile(user, 0, SEEK_END);
 
 		if (res != 0) {
-			destroyMiniVector(&allUsrs);
+			destroyMiniVector_userFull(&allUsrs);
 			return res;
 		}
-
 	}
 
 	// need to add or modify the given user
@@ -107,7 +106,7 @@ int saveUser(const userFull *user) {
 	// else
 	//   write the current user
 	for (size_t i = 0; i < allUsrs.count; ++i) {
-		auto elem = (const userFull *)(getElement(&allUsrs, i));
+		userFull *elem = getElement_userFull(&allUsrs, i);
 
 		// wrong user? check next
 		if (elem->UUID != user->UUID) {
@@ -117,11 +116,11 @@ int saveUser(const userFull *user) {
 		found = true;
 
 		// FIXME: reading the file twice
-		auto fd = fopen("./users.dat", "r");
-		
+		FILE *fd = fopen("./users.dat", "r");
+
 		if (fd == NULL) {
 			fileErrLog();
-			destroyMiniVector(&allUsrs);
+			destroyMiniVector_userFull(&allUsrs);
 			return 1;
 		}
 
@@ -139,7 +138,7 @@ int saveUser(const userFull *user) {
 			}
 
 			uint32_t hex;
-			unStringifyHex((uint8_t *) buffer, &hex);
+			unStringifyHex((uint8_t *)buffer, &hex);
 			if (hex == user->UUID) {
 				writeUserToFile(user, ftell(fd), SEEK_SET);
 			}
@@ -152,7 +151,7 @@ int saveUser(const userFull *user) {
 		writeUserToFile(user, 0, SEEK_END);
 	}
 
-	destroyMiniVector(&allUsrs);
+	destroyMiniVector_userFull(&allUsrs);
 	return 0;
 }
 
@@ -183,11 +182,11 @@ int toUserFull(const char *str, userFull *dest) {
 	return 0;
 }
 
-int getAllUsers(miniVector *users) {
+int getAllUsers(miniVector_userFull *users) {
 
 	// I use errno to check for errors
-	errno     = NO_ERR;
-	auto file = fopen("./users.dat", "r");
+	errno      = NO_ERR;
+	FILE *file = fopen("./users.dat", "r");
 
 	// file does not exist, err 1
 	if (file == NULL) {
@@ -223,7 +222,7 @@ int getAllUsers(miniVector *users) {
 
 		// tuUserFull should not SIGSEGV or such, so i can just pass watherver fgets gives me
 		if (!toUserFull(buffer, &curr)) {
-			append(users, &curr);
+			append_userFull(users, &curr);
 		}
 	}
 
@@ -239,7 +238,7 @@ int genUUID(uint32_t *num) {
 	// TODO
 	// Yes this allocates 5 * sizeof(userFull) -> 5 * (256 + 4) -> 1300 bytes
 	// maybe in the future i will use something smaller
-	miniVector allUsrs = makeMiniVector(sizeof(userFull), 5);
+	miniVector_userFull allUsrs = makeMiniVector_userFull(sizeof(userFull));
 
 	// file does not exist, cannot collide with other UUIDs
 	switch (getAllUsers(&allUsrs)) {
@@ -252,7 +251,7 @@ int genUUID(uint32_t *num) {
 	};
 
 	for (size_t i = 0; i < allUsrs.count; ++i) {
-		auto elem = (userFull *)(getElement(&allUsrs, i));
+		userFull *elem = getElement_userFull(&allUsrs, i);
 
 		// Another user has this UUID
 		if (candidate == elem->UUID) {
@@ -267,7 +266,49 @@ int genUUID(uint32_t *num) {
 
 	*num = candidate;
 
-	destroyMiniVector(&allUsrs);
+	destroyMiniVector_userFull(&allUsrs);
 
 	return 0;
 }
+
+int getUserFileMetadata(userFileMeta *meta) {
+	// I use errno to check for errors
+	errno      = NO_ERR;
+	FILE *file = fopen("./users.dat", "r");
+
+	*meta = (userFileMeta){0, 0, 0};
+
+	// file does not exist, err 1
+	if (file == NULL) {
+		fileErrLog();
+		return 1;
+	}
+	// opening failed for other reasons, err 2
+	if (errno != NO_ERR) {
+		fileErrLog();
+		fclose(file);
+		return 2;
+	}
+
+	uint32_t buffer;
+
+	fread(&buffer, 1, 4, file);
+
+	meta->versionMajor = buffer & 0b1111'0000'0000'0000'0000'0000'0000'0000 >> 28;
+	meta->versionMinor = buffer & 0b0000'1111'0000'0000'0000'0000'0000'0000 >> 24;
+
+	meta->numUsers = buffer & 0b1111'1111'1111'1111'1111'1111;
+
+	return 0;
+}
+
+int setUserFileMetadata(const userFileMeta *meta);
+
+/**
+ * updates the metedata inside the file by the amount of the specified struct, if the negative flag is true, the ampunt os subtracted instead of added
+ *
+ * @param meta the metadata values to update by
+ * @param negative whether to subtract the amount in 'meta' instead of adding it
+ * @return 0 if successfull, 1 otherwise
+ */
+int updateUserFileMetadata(const userFileMeta *meta, const bool negative);
