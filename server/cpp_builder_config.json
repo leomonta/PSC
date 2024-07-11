@@ -35,14 +35,25 @@
 		"linker_args": "-fsanitize=address -fsanitize=leak"
 	},
 	"analyze": {
-		"compiler_args": "-g3 -std=c2x -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fanalyzer"
+		"compiler_args": "-g3 -std=c2x -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra -fanalyzer",
+		"linker_args": "-fsanitize=address -fsanitize=leak"
 	},
 	"no-asan": {
 		"compiler_args": "-g3 -std=c2x -Wno-missing-field-initializers -Wno-unknown-pragmas -Wall -Wconversion -Wshadow -Wextra",
-		"linker_args": ""
+		"linker_args": "",
+		"libraries_names": [
+			"dl",
+			"pthread",
+			"netTcpSsl"
+		]
 	},
 	"release": {
 		"compiler_args": "-Ofast -std=c2x",
-		"linker_args": "-flto"
+		"linker_args": "-flto",
+		"libraries_names": [
+			"dl",
+			"pthread",
+			"netTcpSsl"
+		]
 	}
 }

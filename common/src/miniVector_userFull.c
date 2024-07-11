@@ -18,7 +18,7 @@ void append_userFull(miniVector_userFull *vec, userFull *element) {
 		grow_userFull(vec);
 	}
 
-	memcpy(&(vec->data[vec->count]), &element, sizeof(userFull));
+	memcpy(&(vec->data[vec->count]), element, sizeof(userFull));
 
 	++(vec->count);
 }

@@ -298,17 +298,36 @@ int getUserFileMetadata(userFileMeta *meta) {
 	meta->versionMinor = buffer & 0b0000'1111'0000'0000'0000'0000'0000'0000 >> 24;
 
 	meta->numUsers = buffer & 0b1111'1111'1111'1111'1111'1111;
+	
+	fclose(file);
 
 	return 0;
 }
 
-int setUserFileMetadata(const userFileMeta *meta);
+int setUserFileMetadata(const userFileMeta *meta) {
 
-/**
- * updates the metedata inside the file by the amount of the specified struct, if the negative flag is true, the ampunt os subtracted instead of added
- *
- * @param meta the metadata values to update by
- * @param negative whether to subtract the amount in 'meta' instead of adding it
- * @return 0 if successfull, 1 otherwise
- */
+	errno      = NO_ERR;
+	FILE *file = fopen("./users.dat", "r");
+
+	// file does not exist, err 1
+	if (file == NULL) {
+		fileErrLog();
+		return 1;
+	}
+	// opening failed for other reasons, err 2
+	if (errno != NO_ERR) {
+		fileErrLog();
+		fclose(file);
+		return 2;
+	}
+
+	uint32_t buffer;
+
+	fread(&buffer, 1, 4, file);
+	
+	fclose(file);
+
+	return 0;
+}
+
 int updateUserFileMetadata(const userFileMeta *meta, const bool negative);
