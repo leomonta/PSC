@@ -1,19 +1,10 @@
-#include "constants.h"
 
-#include <stddef.h>
-#include <stdint.h>
-
-typedef struct userFull {
-	uint32_t UUID;
-	char     uname[MAX_UNAME_LEN];
-	void    *publicKey; // for when i put encryption
-} userFull;
 
 typedef struct {
 
-	userFull *data;     // data ptr
-	size_t    capacity; // total allocated byte
-	size_t    count;    // how many elements are stored at the moment
+	userFull* data;        // data ptr
+	size_t capacity;    // total allocated byte
+	size_t count;       // how many elements are stored at the moment
 
 } miniVector_userFull;
 
@@ -51,10 +42,10 @@ void destroyMiniVector_userFull(miniVector_userFull *vec);
 
 /**
  * Return the element at the specified position
- *
+ * 
  * @param vec the vector to get the element from
  * @param index the position the element should be
- *
+ * 
  * @return the the element at pos index
  */
-userFull *getElement_userFull(const miniVector_userFull *vec, const size_t index);
+userFull* getElement_userFull(const miniVector_userFull *vec, const size_t index);

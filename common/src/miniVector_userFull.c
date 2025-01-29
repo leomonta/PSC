@@ -1,10 +1,12 @@
-#include "miniVector_userFull.h"
+
+
+#include <minitVector_userFull>
 
 #include <stdlib.h>
 #include <string.h>
 
 miniVector_userFull makeMiniVector_userFull(const size_t initialCount) {
-	miniVector_userFull res = {
+	miniVector res = {
 	    .data     = malloc(initialCount * sizeof(userFull)),
 	    .capacity = initialCount,
 	    .count    = 0,
@@ -15,7 +17,7 @@ miniVector_userFull makeMiniVector_userFull(const size_t initialCount) {
 
 void append_userFull(miniVector_userFull *vec, userFull *element) {
 	if (vec->count == vec->capacity) {
-		grow_userFull(vec);
+		grow(vec);
 	}
 
 	memcpy(&(vec->data[vec->count]), element, sizeof(userFull));
@@ -33,7 +35,7 @@ void destroyMiniVector_userFull(miniVector_userFull *vec) {
 	free(vec->data);
 }
 
-userFull *getElement_userFull(const miniVector_userFull *vec, const size_t index) {
+userFull* getElement_userFull(const miniVector_userFull *vec, const size_t index) {
 	if (index >= vec->count) {
 		// invalid pos
 		return nullptr;

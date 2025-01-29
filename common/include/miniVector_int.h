@@ -1,13 +1,10 @@
 
 
-#include <stddef.h>
-
-
 typedef struct {
 
- int *data; // data ptr
- size_t capacity; // total allocated byte
- size_t count; // how many elements are stored at the moment
+	int* data;        // data ptr
+	size_t capacity;    // total allocated byte
+	size_t count;       // how many elements are stored at the moment
 
 } miniVector_int;
 
@@ -27,7 +24,7 @@ miniVector_int makeMiniVector_int(const size_t initialCount);
  * @param vec the miniVecor where to append the data
  * @param element a pointer to the data to be appended
  */
-void append_int(miniVector_int *vec, int element);
+void append_int(miniVector_int *vec, int *element);
 
 /**
  * Doubles the capacity of the given vector
@@ -51,4 +48,4 @@ void destroyMiniVector_int(miniVector_int *vec);
  * 
  * @return the the element at pos index
  */
-int getElement_int(const miniVector_int *vec, const size_t index);
+int* getElement_int(const miniVector_int *vec, const size_t index);
