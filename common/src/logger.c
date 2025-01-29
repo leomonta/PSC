@@ -20,7 +20,7 @@ void setLogLevel(const char newLogLevel) {
 	currLogLevel = newLogLevel;
 }
 
-void log(const char logLevel, const char *mex, ...) {
+void llog(const char logLevel, const char *mex, ...) {
 
 	if (currLogLevel > logLevel) {
 		return;

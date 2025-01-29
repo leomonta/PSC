@@ -20,7 +20,7 @@
  * @param the message / format of the message
  * @param variadic the data to be printed
  */
-void log(const char logLevel, const char *mex, ...);
+void llog(const char logLevel, const char *mex, ...);
 
 /**
  * Set the minimun log level that a message need to be to be printed

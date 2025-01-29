@@ -1,6 +1,8 @@
 #pragma once
 
 template <T>
+#include "#T#.h"
+
 #include <stddef.h>
 
 typedef struct {

@@ -33,7 +33,7 @@ void acceptClient(const runtimeInfo *rti) {
 			continue;
 		}
 
-		log(LOG_DEBUG, "[SERVER] Launched request resolver for socket %d\n", client);
+		llog(LOG_DEBUG, "[SERVER] Launched request resolver for socket %d\n", client);
 
 		threadData tinfo = {client};
 
@@ -49,7 +49,7 @@ void *proxy_resReq(void *data) {
 
 		// dequeue might return a null value for how it is implemented, i deal with that
 		if (tdata.clientSocket == -1) {
-			log(LOG_DEBUG, "DEQUEUE return null\n");
+			llog(LOG_DEBUG, "DEQUEUE return null\n");
 			continue;
 		}
 

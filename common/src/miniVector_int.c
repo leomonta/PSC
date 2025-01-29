@@ -1,12 +1,12 @@
 
 
-#include <minitVector_int>
+#include <miniVector_int.h>
 
 #include <stdlib.h>
 #include <string.h>
 
 miniVector_int makeMiniVector_int(const size_t initialCount) {
-	miniVector res = {
+	miniVector_int res = {
 	    .data     = malloc(initialCount * sizeof(int)),
 	    .capacity = initialCount,
 	    .count    = 0,
@@ -17,7 +17,7 @@ miniVector_int makeMiniVector_int(const size_t initialCount) {
 
 void append_int(miniVector_int *vec, int *element) {
 	if (vec->count == vec->capacity) {
-		grow(vec);
+		grow_int(vec);
 	}
 
 	memcpy(&(vec->data[vec->count]), element, sizeof(int));

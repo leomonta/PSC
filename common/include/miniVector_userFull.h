@@ -1,4 +1,9 @@
+#pragma once
 
+
+#include "userFull.h"
+
+#include <stddef.h>
 
 typedef struct {
 

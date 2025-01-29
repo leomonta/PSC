@@ -1,8 +1,9 @@
 #pragma once
 
-#include "miniVector_userFull.h"
-
 #include <stdint.h>
+#include "userFull.h"
+
+#include "miniVector_userFull.h"
 
 typedef struct {
 	uint8_t versionMajor;

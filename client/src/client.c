@@ -21,7 +21,7 @@ int main() {
 	head.UUID         = (uint32_t)rand();
 	head.method       = (uint8_t)(rand() % 3 << 1 | rand() % 2);
 
-	log(LOG_DEBUG, "Sent this header\n");
+	llog(LOG_DEBUG, "Sent this header\n");
 
 	printHeaderStruct(&head);
 

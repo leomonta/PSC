@@ -14,7 +14,7 @@
 
 // since i check many times for io errors, i'm gonna use a single function to print the message, so i can replace it easily if needed
 void fileErrLog() {
-	log(LOG_ERROR, "An error occurred while operating if the user file on disk, -> %s\n", strerror(errno));
+	llog(LOG_ERROR, "An error occurred while operating if the user file on disk, -> %s\n", strerror(errno));
 }
 
 /**

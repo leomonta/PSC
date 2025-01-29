@@ -1,12 +1,12 @@
 
 
-#include <minitVector_userFull>
+#include <miniVector_userFull.h>
 
 #include <stdlib.h>
 #include <string.h>
 
 miniVector_userFull makeMiniVector_userFull(const size_t initialCount) {
-	miniVector res = {
+	miniVector_userFull res = {
 	    .data     = malloc(initialCount * sizeof(userFull)),
 	    .capacity = initialCount,
 	    .count    = 0,
@@ -17,7 +17,7 @@ miniVector_userFull makeMiniVector_userFull(const size_t initialCount) {
 
 void append_userFull(miniVector_userFull *vec, userFull *element) {
 	if (vec->count == vec->capacity) {
-		grow(vec);
+		grow_userFull(vec);
 	}
 
 	memcpy(&(vec->data[vec->count]), element, sizeof(userFull));

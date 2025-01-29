@@ -1,12 +1,12 @@
 template <T>
 
-#include <minitVector_#T#>
+#include <miniVector_#T#.h>
 
 #include <stdlib.h>
 #include <string.h>
 
 miniVector_#T# makeMiniVector_#T#(const size_t initialCount) {
-	miniVector res = {
+	miniVector_#T# res = {
 	    .data     = malloc(initialCount * sizeof(T)),
 	    .capacity = initialCount,
 	    .count    = 0,
@@ -17,7 +17,7 @@ miniVector_#T# makeMiniVector_#T#(const size_t initialCount) {
 
 void append_#T#(miniVector_#T# *vec, T *element) {
 	if (vec->count == vec->capacity) {
-		grow(vec);
+		grow_#T#(vec);
 	}
 
 	memcpy(&(vec->data[vec->count]), element, sizeof(T));
