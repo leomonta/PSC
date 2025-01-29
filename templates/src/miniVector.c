@@ -1,18 +1,13 @@
-INCL
+template <T>
 
-#define miniVector        r(miniVector)
-#define makeMiniVector    r(makeMiniVector)
-#define append            r(append)
-#define grow              r(grow)
-#define destroyMiniVector r(destroy)
-#define getElement        r(getElement)
+#include <minitVector_#T#>
 
 #include <stdlib.h>
 #include <string.h>
 
-miniVector makeMiniVector(const size_t initialCount) {
+miniVector_#T# makeMiniVector_#T#(const size_t initialCount) {
 	miniVector res = {
-	    .data     = malloc(initialCount * sizeof(TYPE)),
+	    .data     = malloc(initialCount * sizeof(T)),
 	    .capacity = initialCount,
 	    .count    = 0,
 	};
@@ -20,27 +15,27 @@ miniVector makeMiniVector(const size_t initialCount) {
 	return res;
 }
 
-void append(miniVector *vec, TYPE *element) {
+void append_#T#(miniVector_#T# *vec, T *element) {
 	if (vec->count == vec->capacity) {
 		grow(vec);
 	}
 
-	memcpy(&(vec->data[vec->count]), element, sizeof(TYPE));
+	memcpy(&(vec->data[vec->count]), element, sizeof(T));
 
 	++(vec->count);
 }
 
-void grow(miniVector *vec) {
+void grow_#T#(miniVector_#T# *vec) {
 	vec->capacity *= 2;
-	vec->data = realloc(vec->data, sizeof(TYPE) * vec->capacity);
+	vec->data = realloc(vec->data, sizeof(T) * vec->capacity);
 }
 
-void destroyMiniVector(miniVector *vec) {
+void destroyMiniVector_#T#(miniVector_#T# *vec) {
 	// such logic
 	free(vec->data);
 }
 
-TYPE* getElement(const miniVector *vec, const size_t index) {
+T* getElement_#T#(const miniVector_#T# *vec, const size_t index) {
 	if (index >= vec->count) {
 		// invalid pos
 		return nullptr;

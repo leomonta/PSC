@@ -2,22 +2,15 @@
 
 #include <stddef.h>
 
-INCL
-
-#define miniVector        r(miniVector)
-#define makeMiniVector    r(makeMiniVector)
-#define append            r(append)
-#define grow              r(grow)
-#define destroyMiniVector r(destroy)
-#define getElement        r(getElement)
+template <T>
 
 typedef struct {
 
-	TYPE  *data;        // data ptr
+	T* data;        // data ptr
 	size_t capacity;    // total allocated byte
 	size_t count;       // how many elements are stored at the moment
 
-} miniVector;
+} miniVector_#T#;
 
 /**
  * Make a mini vector with a preallocated array of elementSize * initalCount lenght
@@ -27,7 +20,7 @@ typedef struct {
  *
  * @return a built miniVector
  */
-miniVector makeMiniVector(const size_t initialCount);
+miniVector_#T# makeMiniVector_#T#(const size_t initialCount);
 
 /**
  * append an element of the previously specified size at the end of the vector
@@ -35,21 +28,21 @@ miniVector makeMiniVector(const size_t initialCount);
  * @param vec the miniVecor where to append the data
  * @param element a pointer to the data to be appended
  */
-void append(miniVector *vec, TYPE *element);
+void append_#T#(miniVector_#T# *vec, T *element);
 
 /**
  * Doubles the capacity of the given vector
  *
  * @param vec the vector to grow
  */
-void grow(miniVector *vec);
+void grow_#T#(miniVector_#T# *vec);
 
 /**
  * Frees all the resource allocated by vec
  *
  * @param vec the vector the destroy
  */
-void destroyMiniVector(miniVector *vec);
+void destroyMiniVector_#T#(miniVector_#T# *vec);
 
 /**
  * Return the element at the specified position
@@ -59,4 +52,4 @@ void destroyMiniVector(miniVector *vec);
  * 
  * @return the the element at pos index
  */
-TYPE* getElement(const miniVector *vec, const size_t index);
+T* getElement_#T#(const miniVector_#T# *vec, const size_t index);
