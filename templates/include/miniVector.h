@@ -1,8 +1,6 @@
 #pragma once
 
-template <T, I>
-
-I
+template <T, I> I
 
 #include <stddef.h>
 
