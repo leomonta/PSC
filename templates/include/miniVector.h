@@ -1,6 +1,9 @@
 #pragma once
 
-template <T>
+template <T, I>
+
+I
+
 #include <stddef.h>
 
 typedef struct {
